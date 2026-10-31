@@ -3,7 +3,6 @@ import { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getBillingContext } from '@/lib/billing'
-import { computeBillingState } from '@/lib/billing-state'
 import { BillingPanel } from '@/components/app/billing-panel'
 import { ProfileSettings } from '@/components/app/profile-settings'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -31,7 +30,6 @@ export default async function SettingsPage() {
 
   const { organization, subscription, usage, profile } = context
   const billingState = await getOrganizationBillingState(organization.id, organization.plan)
-  const billingState = computeBillingState(subscription, organization.plan)
 
   return (
     <div className="flex flex-col gap-6 p-6">
