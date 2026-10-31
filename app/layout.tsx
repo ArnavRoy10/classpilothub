@@ -1,41 +1,32 @@
-import { redirect } from 'next/navigation'
-import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
-import { AppSidebar } from '@/components/app/app-sidebar'
-import { AppTopbar } from '@/components/app/app-topbar'
-import { PaymentDuePopup, SuspendedScreen } from '@/components/app/billing-gate'
-import { createClient } from '@/lib/supabase/server'
-import { getUserContext } from '@/lib/supabase/user-context'
-import { getOrganizationBillingState } from '@/lib/billing-gate'
+import type { Metadata } from 'next'
+import { Inter, Plus_Jakarta_Sans } from 'next/font/google'
+import { ThemeProvider } from 'next-themes'
+import { Analytics } from '@vercel/analytics/next'
+import { Toaster } from '@/components/ui/sonner'
+import './globals.css'
 
-export default async function AppLayout({
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' })
+const jakarta = Plus_Jakarta_Sans({ subsets: ['latin'], variable: '--font-jakarta', display: 'swap' })
+
+export const metadata: Metadata = {
+  title: { default: 'ClassPilot', template: '%s | ClassPilot' },
+  description: 'Manage students, teachers, batches, fees, attendance and results for your coaching center.',
+}
+
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const userContext = await getUserContext()
-  if (!userContext) {
-    // Signed in but no organisation yet -> finish setup. (Sending them to /login loops, because
-    // the proxy bounces signed-in users from /login straight back to /dashboard.)
-    const { data: { user } } = await (await createClient()).auth.getUser()
-    redirect(user ? '/onboarding' : '/login')
-  }
-
-  const billing = await getOrganizationBillingState(userContext.organization.id, userContext.organization.plan)
-  const isOwner = userContext.role === 'owner'
-
-  // Unpaid for more than the grace period: the whole organisation is shut down.
-  if (billing.kind === 'suspended') {
-    return <SuspendedScreen state={billing} isOwner={isOwner} orgName={userContext.organization.name} />
-  }
-
   return (
-    <SidebarProvider>
-      <AppSidebar userContext={userContext} />
-      <SidebarInset>
-        <AppTopbar userContext={userContext} />
-        <div className="flex flex-1 flex-col gap-6 p-4 sm:p-6">{children}</div>
-      </SidebarInset>
-      {billing.kind === 'grace' && <PaymentDuePopup state={billing} isOwner={isOwner} orgName={userContext.organization.name} />}
-    </SidebarProvider>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${inter.variable} ${jakarta.variable} font-sans antialiased`}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          {children}
+          <Toaster richColors />
+        </ThemeProvider>
+        <Analytics />
+      </body>
+    </html>
   )
 }
