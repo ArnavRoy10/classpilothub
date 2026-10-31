@@ -6,8 +6,6 @@ import { createFeeQrCode, razorpay } from '@/lib/razorpay'
 
 export async function POST(request: Request) {
   try {
-        const locked = await organizationSuspendedResponse()
-    if (locked) return locked
     if (!razorpay) return NextResponse.json({ error: 'Razorpay is not configured.' }, { status: 503 })
 
     const body = await request.json() as { studentFeeId?: string }
