@@ -11,6 +11,9 @@ const jakarta = Plus_Jakarta_Sans({ subsets: ['latin'], variable: '--font-jakart
 export const metadata: Metadata = {
   title: { default: 'ClassPilot', template: '%s | ClassPilot' },
   description: 'Manage students, teachers, batches, fees, attendance and results for your coaching center.',
+  verification: {
+    google: 'wJlZ9wB3R4_7pYdivb0csD8PfdxfjDxZOgVMH2pN-CM',
+  },
 }
 
 export default function RootLayout({
