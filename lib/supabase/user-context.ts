@@ -1,10 +1,13 @@
 import { createClient } from '@/lib/supabase/server'
+import { memberTypeOf, resolvePermissions, type MemberType, type Permissions } from '@/lib/permissions'
 
 export type UserContext = {
   userId: string
   fullName: string
   email: string
   role: string
+  memberType: MemberType | null
+  permissions: Permissions
   organization: {
     id: string
     name: string
@@ -20,15 +23,30 @@ export async function getUserContext(): Promise<UserContext | null> {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return null
 
-  const { data: profile } = await supabase
+  const orgFields = 'organizations(id, name, type, plan, max_teachers, max_students)'
+  type ProfileRow = {
+    id: string; full_name: string; email: string | null; role: string; organization_id: string
+    member_type?: string | null; permissions?: unknown; organizations: unknown
+  }
+  let { data: profile } = (await supabase
     .from('profiles')
-    .select('id, full_name, email, role, organization_id, organizations(id, name, type, plan, max_teachers, max_students)')
+    .select(`id, full_name, email, role, member_type, permissions, organization_id, ${orgFields}`)
     .eq('id', user.id)
-    .maybeSingle()
+    .maybeSingle()) as { data: ProfileRow | null }
 
-  const organization = Array.isArray(profile?.organizations)
-    ? profile.organizations[0]
-    : profile?.organizations
+  // Before docs/member-access.sql has been run the two new columns do not exist yet.
+  if (!profile) {
+    const fallback = await supabase
+      .from('profiles')
+      .select(`id, full_name, email, role, organization_id, ${orgFields}`)
+      .eq('id', user.id)
+      .maybeSingle()
+    profile = fallback.data as ProfileRow | null
+  }
+
+  type OrgRow = { id: string; name: string; type: string; plan: string; max_teachers: number; max_students: number }
+  const rawOrganization = profile?.organizations
+  const organization = (Array.isArray(rawOrganization) ? rawOrganization[0] : rawOrganization) as OrgRow | undefined
 
   if (!profile || !organization) return null
 
@@ -37,6 +55,8 @@ export async function getUserContext(): Promise<UserContext | null> {
     fullName: profile.full_name,
     email: profile.email || user.email || '',
     role: profile.role,
+    memberType: memberTypeOf(profile),
+    permissions: resolvePermissions(memberTypeOf(profile), profile.permissions),
     organization: {
       id: organization.id,
       name: organization.name,
