@@ -17,6 +17,13 @@ import {
 import { Logo } from '@/components/brand/logo'
 import { appNav } from '@/lib/nav'
 import type { UserContext } from '@/lib/supabase/user-context'
+import { STAFF_SECTIONS, hasPermission } from '@/lib/permissions'
+
+function canSee(userContext: UserContext | null, href: string) {
+  const section = STAFF_SECTIONS.find((item) => item.href === href)
+  if (!section || !userContext) return true // dashboard, support and settings are open to every staff member
+  return hasPermission(userContext, section.key)
+}
 
 export function AppSidebar({ userContext }: { userContext: UserContext | null }) {
   const pathname = usePathname()
@@ -30,7 +37,7 @@ export function AppSidebar({ userContext }: { userContext: UserContext | null })
       </SidebarHeader>
 
       <SidebarContent>
-        {appNav.map((group) => (
+        {appNav.map((group) => ({ ...group, items: group.items.filter((item) => canSee(userContext, item.href)) })).filter((group) => group.items.length > 0).map((group) => (
           <SidebarGroup key={group.label}>
             <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
             <SidebarGroupContent>
