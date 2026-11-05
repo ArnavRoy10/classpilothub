@@ -14,6 +14,9 @@ export default async function AppLayout({
   const userContext = await getUserContext()
   if (!userContext) redirect('/login')
 
+  // Students and parents only ever use the portal.
+  if (['student', 'parent'].includes(userContext.role)) redirect('/portal')
+
   const billing = await getOrganizationBillingState(userContext.organization.id, userContext.organization.plan)
   const isOwner = userContext.role === 'owner'
 
