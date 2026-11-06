@@ -4,6 +4,7 @@ import { Activity, ArrowRight, Building2, CreditCard, Users } from 'lucide-react
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { requireFounderAdmin, writeFounderAudit } from '@/lib/founder-admin'
 import { getAdminClient } from '@/lib/supabase/admin'
+import { computeBillingState } from '@/lib/billing-state'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -44,7 +45,7 @@ export default async function FounderAdminPage() {
       <header className="flex flex-col gap-2 border-b border-border pb-5">
         <p className="text-sm font-medium text-primary">Founder console</p>
         <h1 className="text-3xl font-semibold tracking-tight">ClassPilot operations</h1>
-        <p className="max-w-2xl text-sm leading-6 text-muted-foreground">Read-only visibility into organizations, subscriptions, users, and recent admin activity. Customer data remains scoped to the organization in the product.</p>
+        <p className="max-w-2xl text-sm leading-6 text-muted-foreground">Open any organization to edit it, change its plan and limits, give free days, make it free, or manage its members. Every change is written to the audit log.</p>
       </header>
 
       <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4" aria-label="Founder metrics">
@@ -73,10 +74,11 @@ export default async function FounderAdminPage() {
             {recentOrganizations.length === 0 ? <p className="text-sm text-muted-foreground">No organizations yet.</p> : recentOrganizations.map((organization) => {
               const memberCount = profiles?.filter((profile) => profile.organization_id === organization.id).length ?? 0
               const subscription = subscriptions?.find((item) => item.organization_id === organization.id)
-              return <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border p-3" key={organization.id}>
+              const state = computeBillingState(subscription ?? null, organization.plan).kind
+              return <Link href={`/founder/organizations/${organization.id}`} className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border p-3 transition-colors hover:bg-muted/50" key={organization.id}>
                 <div><p className="font-medium">{organization.name}</p><p className="text-xs text-muted-foreground">{organization.type} · {memberCount} profile{memberCount === 1 ? '' : 's'}</p></div>
-                <div className="text-right"><p className="text-sm font-medium">{subscription?.plan ?? organization.plan}</p><p className="text-xs text-muted-foreground">{subscription?.status ?? 'no subscription'}</p></div>
-              </div>
+                <div className="flex items-center gap-3"><div className="text-right"><p className="text-sm font-medium">{subscription?.plan ?? organization.plan}</p><p className="text-xs text-muted-foreground">{subscription?.status ?? 'no subscription'} · {state}</p></div><span className="inline-flex items-center gap-1 text-xs font-medium text-primary">Manage <ArrowRight className="size-3" /></span></div>
+              </Link>
             })}
           </CardContent>
         </Card>
