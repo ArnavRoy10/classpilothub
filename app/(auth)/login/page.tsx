@@ -47,6 +47,11 @@ function LoginForm() {
       profile = fallback.data
     }
     const actual = memberTypeOf(profile)
+    if (!actual && selected === 'owner') {
+      // The founder may have no organisation profile: send them to the founder console.
+      const isFounder = await fetch('/api/auth/is-founder').then((response) => response.json()).then((result: { founder?: boolean }) => result.founder === true).catch(() => false)
+      if (isFounder) { toast.success('Welcome back, founder'); router.push('/founder'); router.refresh(); return }
+    }
     if (!actual) {
       await supabase.auth.signOut()
       setLoading(false)
