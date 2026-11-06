@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { AlertTriangle, Loader2, Lock } from 'lucide-react'
+import { AlertTriangle, Eye, Loader2, Lock } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Logo } from '@/components/brand/logo'
 import { createClient } from '@/lib/supabase/client'
@@ -19,10 +19,10 @@ function useSignOut() {
   }
 }
 
-function PayButton({ state, label }: { state: BillingState; label: string }) {
+function PayButton({ state, label, compact = false }: { state: BillingState; label: string; compact?: boolean }) {
   const { busy, checkout } = useRazorpayCheckout()
   return (
-    <Button size="lg" className="w-full" disabled={busy !== null} onClick={() => checkout(state.planId)}>
+    <Button size={compact ? 'sm' : 'lg'} className={compact ? '' : 'w-full'} disabled={busy !== null} onClick={() => checkout(state.planId)}>
       {busy && <Loader2 className="mr-2 animate-spin" />}
       {label}
     </Button>
@@ -61,7 +61,7 @@ export function PaymentDuePopup({ state, isOwner, orgName }: { state: BillingSta
         </div>
 
         <p className="mb-4 text-sm font-medium text-destructive">
-          Pay by {formatDate(state.suspendsAt)} ({state.daysLeft} day{state.daysLeft === 1 ? '' : 's'} left). After that your organisation will be suspended.
+          Pay by {formatDate(state.suspendsAt)} ({state.daysLeft} day{state.daysLeft === 1 ? '' : 's'} left). After that your organisation will go into view-only mode.
         </p>
 
         {isOwner ? (
@@ -80,7 +80,53 @@ export function PaymentDuePopup({ state, isOwner, orgName }: { state: BillingSta
   )
 }
 
-// Replaces the whole app once the grace period is over.
+// Popup over the dashboard once the grace period is over. The organisation is in view-only mode:
+// it can be looked at, but nothing can be changed until the payment is made.
+export function SuspendedPopup({ state, isOwner, orgName }: { state: BillingState; isOwner: boolean; orgName: string }) {
+  const [open, setOpen] = useState(true)
+  const signOut = useSignOut()
+  if (!open) return null
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-background/70 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="suspended-title">
+      <div className="w-full max-w-md rounded-xl border bg-card p-6 shadow-xl">
+        <div className="mb-3 flex items-center gap-3">
+          <div className="flex size-10 items-center justify-center rounded-full bg-destructive/10 text-destructive"><Lock className="size-5" /></div>
+          <h2 id="suspended-title" className="text-lg font-semibold">{orgName} is suspended</h2>
+        </div>
+        <p className="text-sm text-muted-foreground">
+          {reasonText(state)} Payment was not received within 4 days, so your organisation is now in view-only mode. Your data is safe and you can still look around, but nothing can be added, changed or deleted until the payment is made.
+        </p>
+        <div className="my-4 flex items-baseline justify-between rounded-lg border bg-muted/40 p-4">
+          <span className="text-sm text-muted-foreground">{state.planName} plan · 1 month</span>
+          <span className="text-2xl font-semibold">{formatINR(state.amountDue)}</span>
+        </div>
+        <div className="flex flex-col gap-2">
+          {isOwner
+            ? <PayButton state={state} label={`Pay ${formatINR(state.amountDue)} and reactivate`} />
+            : <p className="text-sm text-muted-foreground">Please ask your organisation owner to complete the payment.</p>}
+          <Button variant="outline" onClick={() => setOpen(false)}><Eye data-icon="inline-start" />View dashboard (view-only)</Button>
+          <Button variant="ghost" onClick={signOut}>Sign out</Button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// Thin bar kept at the top of every page while in view-only mode, after the popup is closed.
+export function ReadOnlyBanner({ state, isOwner }: { state: BillingState; isOwner: boolean }) {
+  return (
+    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-destructive/30 bg-destructive/10 px-4 py-2 text-sm">
+      <span className="flex items-center gap-2 font-medium text-destructive">
+        <Lock className="size-4 shrink-0" />
+        View-only mode: payment overdue since {formatDate(state.periodEnd)}. Nothing can be changed until the payment is made.
+      </span>
+      {isOwner && <PayButton state={state} label={`Pay ${formatINR(state.amountDue)}`} compact />}
+    </div>
+  )
+}
+
+// Full-page lock. No longer used by the dashboard (it now uses SuspendedPopup), kept for reference.
 export function SuspendedScreen({ state, isOwner, orgName }: { state: BillingState; isOwner: boolean; orgName: string }) {
   const signOut = useSignOut()
   return (
