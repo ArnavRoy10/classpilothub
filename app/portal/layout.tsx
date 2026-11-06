@@ -18,5 +18,5 @@ export default async function PortalLayout({ children }: { children: React.React
       </div>
     )
   }
-  return <PortalShell name={context.fullName} role={context.role}>{children}</PortalShell>
+  return <PortalShell name={context.fullName} role={context.role} permissions={context.permissions}>{children}</PortalShell>
 }
