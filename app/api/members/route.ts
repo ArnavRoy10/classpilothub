@@ -110,7 +110,7 @@ export async function POST(request: Request) {
 
   // 2. the teacher / student record
   const recordTable = kind === 'teacher' ? 'teachers' : 'students'
-  const recordPayload = kind === 'teacher'
+  const recordPayload: Record<string, unknown> = kind === 'teacher'
     ? { organization_id: caller.organizationId, full_name: fullName, email, phone: String(body.phone ?? '').trim() || null, subject, status: 'active' }
     : {
         organization_id: caller.organizationId, full_name: fullName, student_code: studentCode,
