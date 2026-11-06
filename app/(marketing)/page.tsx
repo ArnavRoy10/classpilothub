@@ -5,6 +5,7 @@ import { PricingSection } from '@/components/marketing/pricing-section'
 import { Faq } from '@/components/marketing/faq'
 import type { Metadata } from 'next'
 import { Cta } from '@/components/marketing/cta'
+import { Audiences } from '@/components/marketing/audiences'
 
 export const metadata: Metadata = {
   title: 'Coaching center software that keeps classes moving',
@@ -21,6 +22,7 @@ export default function HomePage() {
   return (
     <>
       <Hero />
+      <Audiences />
       <FeaturesSection />
       <HowItWorks />
       <PricingSection />
