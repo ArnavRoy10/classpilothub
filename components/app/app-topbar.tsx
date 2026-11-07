@@ -14,6 +14,7 @@ import { findNavItem } from '@/lib/nav'
 import type { UserContext } from '@/lib/supabase/user-context'
 import { createClient } from '@/lib/supabase/client'
 import { NotificationCenter } from '@/components/app/notification-center'
+import { QuickSearch } from '@/components/app/quick-search'
 
 export function AppTopbar({ userContext }: { userContext: UserContext | null }) {
   const pathname = usePathname()
