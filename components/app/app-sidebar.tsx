@@ -31,7 +31,7 @@ export function AppSidebar({ userContext }: { userContext: UserContext | null })
   return (
     	<Sidebar variant="floating" collapsible="icon">
       <SidebarHeader>
-        <Link href="/dashboard" className="px-2 py-1.5" aria-label="ClassPilot dashboard">
+        <Link href="/dashboard" className="block overflow-hidden px-2 py-1.5" aria-label="ClassPilot dashboard"">
           <Logo />
         </Link>
       </SidebarHeader>
@@ -47,7 +47,7 @@ export function AppSidebar({ userContext }: { userContext: UserContext | null })
                   const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`)
                   return (
                     <SidebarMenuItem key={item.href}>
-                      <SidebarMenuButton isActive={isActive} render={<Link href={item.href} />}>
+                      <SidebarMenuButton isActive={isActive} tooltip={item.title} render={<Link href={item.href} />}>
                         <Icon />
                         <span>{item.title}</span>
                       </SidebarMenuButton>
@@ -62,7 +62,7 @@ export function AppSidebar({ userContext }: { userContext: UserContext | null })
 
       {userContext && (
         <SidebarFooter>
-          <div className="px-2 py-1.5 text-xs text-muted-foreground">
+          <div className="px-2 py-1.5 text-xs text-muted-foreground group-data-[collapsible=icon]:hidden">
             <div className="truncate font-medium text-foreground">{userContext.organization.name}</div>
             <div className="capitalize">{userContext.organization.plan} plan</div>
           </div>
