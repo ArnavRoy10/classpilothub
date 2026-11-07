@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 import { toast } from 'sonner'
 
 // Requests that must keep working while the organisation is in view-only mode.
-const ALLOWED_API_PREFIXES = ['/api/billing/razorpay', '/api/billing/status', '/api/auth/']
+const ALLOWED_API_PREFIXES = ['/api/billing/razorpay', '/api/billing/status', '/api/auth/', '/api/assistant']
 const ALLOWED_TABLES = ['notifications']
 const MESSAGE = 'View-only mode: your organisation has an unpaid bill. Pay to be able to make changes again.'
 
