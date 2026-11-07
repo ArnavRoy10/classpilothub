@@ -112,4 +112,113 @@
   --foreground: oklch(0.24 0.03 264);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.24 0.03 264);
-   --popover: oklch(1 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.24 0.03 264);
+  --primary: oklch(0.48 0.16 266);
+  --primary-foreground: oklch(0.99 0.005 260);
+  --secondary: oklch(0.965 0.008 260);
+  --secondary-foreground: oklch(0.3 0.03 264);
+  --muted: oklch(0.965 0.008 260);
+  --muted-foreground: oklch(0.53 0.02 264);
+  --accent: oklch(0.95 0.02 60);
+  --accent-foreground: oklch(0.35 0.09 55);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.915 0.008 260);
+  --input: oklch(0.915 0.008 260);
+  --ring: oklch(0.48 0.16 266);
+  --chart-1: oklch(0.48 0.16 266);
+  --chart-2: oklch(0.62 0.14 250);
+  --chart-3: oklch(0.72 0.15 60);
+  --chart-4: oklch(0.7 0.13 165);
+  --chart-5: oklch(0.6 0.16 300);
+  --radius: 0.7rem;
+  --sidebar: oklch(0.99 0.004 260);
+  --sidebar-foreground: oklch(0.3 0.03 264);
+  --sidebar-primary: oklch(0.48 0.16 266);
+  --sidebar-primary-foreground: oklch(0.99 0.005 260);
+  --sidebar-accent: oklch(0.955 0.012 262);
+  --sidebar-accent-foreground: oklch(0.35 0.05 266);
+  --sidebar-border: oklch(0.915 0.008 260);
+  --sidebar-ring: oklch(0.48 0.16 266);
+}
+
+.dark {
+  color-scheme: dark;
+  --background: oklch(0.135 0.035 278);
+  --foreground: oklch(0.97 0.008 270);
+  --card: oklch(0.185 0.04 278);
+  --card-foreground: oklch(0.97 0.008 270);
+  --popover: oklch(0.2 0.045 278);
+  --popover-foreground: oklch(0.97 0.008 270);
+  --primary: oklch(0.68 0.19 272);
+  --primary-foreground: oklch(0.14 0.04 278);
+  --secondary: oklch(0.25 0.045 278);
+  --secondary-foreground: oklch(0.97 0.008 270);
+  --muted: oklch(0.24 0.04 278);
+  --muted-foreground: oklch(0.73 0.03 272);
+  --accent: oklch(0.3 0.07 285);
+  --accent-foreground: oklch(0.97 0.008 270);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 14%);
+  --ring: oklch(0.68 0.19 272);
+  --chart-1: oklch(0.68 0.19 272);
+  --chart-2: oklch(0.8 0.13 205);
+  --chart-3: oklch(0.72 0.22 330);
+  --chart-4: oklch(0.78 0.16 165);
+  --chart-5: oklch(0.78 0.15 75);
+  --sidebar: oklch(0.155 0.04 278);
+  --sidebar-foreground: oklch(0.9 0.015 272);
+  --sidebar-primary: oklch(0.68 0.19 272);
+  --sidebar-primary-foreground: oklch(0.14 0.04 278);
+  --sidebar-accent: oklch(0.26 0.06 280);
+  --sidebar-accent-foreground: oklch(0.97 0.008 270);
+  --sidebar-border: oklch(1 0 0 / 9%);
+  --sidebar-ring: oklch(0.68 0.19 272);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    color-scheme: dark;
+    --background: oklch(0.135 0.035 278);
+    --foreground: oklch(0.97 0.008 270);
+    --card: oklch(0.185 0.04 278);
+    --card-foreground: oklch(0.97 0.008 270);
+    --popover: oklch(0.2 0.045 278);
+    --popover-foreground: oklch(0.97 0.008 270);
+    --primary: oklch(0.68 0.19 272);
+    --primary-foreground: oklch(0.14 0.04 278);
+    --secondary: oklch(0.25 0.045 278);
+    --secondary-foreground: oklch(0.97 0.008 270);
+    --muted: oklch(0.24 0.04 278);
+    --muted-foreground: oklch(0.73 0.03 272);
+    --accent: oklch(0.3 0.07 285);
+    --accent-foreground: oklch(0.97 0.008 270);
+    --destructive: oklch(0.704 0.191 22.216);
+    --border: oklch(1 0 0 / 10%);
+    --input: oklch(1 0 0 / 14%);
+    --ring: oklch(0.68 0.19 272);
+    --chart-1: oklch(0.68 0.19 272);
+    --chart-2: oklch(0.8 0.13 205);
+    --chart-3: oklch(0.72 0.22 330);
+    --chart-4: oklch(0.78 0.16 165);
+    --chart-5: oklch(0.78 0.15 75);
+    --sidebar: oklch(0.155 0.04 278);
+    --sidebar-foreground: oklch(0.9 0.015 272);
+    --sidebar-primary: oklch(0.68 0.19 272);
+    --sidebar-primary-foreground: oklch(0.14 0.04 278);
+    --sidebar-accent: oklch(0.26 0.06 280);
+    --sidebar-accent-foreground: oklch(0.97 0.008 270);
+    --sidebar-border: oklch(1 0 0 / 9%);
+    --sidebar-ring: oklch(0.68 0.19 272);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
