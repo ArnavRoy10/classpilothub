@@ -17,7 +17,7 @@ export function StatCards({ studentCount, attendanceRate, pendingFeesTotal, mont
   ]
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
       {stats.map((stat) => (
         <Card key={stat.key}>
           <CardHeader className="pb-2">
