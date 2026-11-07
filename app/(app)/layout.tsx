@@ -27,7 +27,8 @@ export default async function AppLayout({
   return (
     <SidebarProvider>
       <AppSidebar userContext={userContext} />
-      <SidebarInset>
+      <SidebarInset className="relative isolate">
+        <div aria-hidden="true" className="aurora pointer-events-none absolute inset-0 -z-10 opacity-40" />
         <AppTopbar userContext={userContext} />
         {readOnly && <ReadOnlyBanner state={billing} isOwner={isOwner} />}
         <div className="flex flex-1 flex-col gap-6 p-4 sm:p-6">{children}</div>
