@@ -111,6 +111,15 @@ export default async function DashboardPage() {
     return { time: slot.start_time?.slice(0, 5) ?? '', batch: batch?.name ?? 'Batch', subject: slot.subject ?? '', teacher: teacher?.full_name ?? 'Unassigned', room: slot.room ?? '—' }
   })
 
+   const quickActions = [
+    { key: 'attendance', label: 'Mark attendance', href: '/attendance' },
+    { key: 'students', label: 'Add student', href: '/students' },
+    { key: 'fees', label: 'Collect fees', href: '/fees' },
+    { key: 'announcements', label: 'Post notice', href: '/announcements' },
+  ].filter((action) => !userContext || hasPermission(userContext, action.key))
+
+  const presentToday = result.todayAttendance.filter((a) => a.status === 'present').length
+
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
@@ -125,15 +134,31 @@ export default async function DashboardPage() {
         { id: 'attendance', label: 'Record attendance once', description: 'See daily operations come alive.', href: '/attendance', complete: result.todayAttendance.length > 0 || result.productEvents.some((event) => event.event_name === 'attendance_recorded') },
       ] as ActivationStep[]} />}
       {userContext && <ActivationFeedback />}
-      <StatCards studentCount={result.studentCount} attendanceRate={attendanceRate} pendingFeesTotal={pendingFeesTotal} monthlyCollected={monthlyCollected} />
-      <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
-        <FeeCollectionChart data={feeChartData} />
-        <AttendanceChart data={attendanceChartData} />
-      </div>
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <TodaysClasses classes={todaysClasses} />
-        <ActivityFeed events={result.productEvents} />
+
+      <div className="grid grid-cols-1 items-start gap-4 xl:grid-cols-[1fr_1.25fr_1fr]">
+        {/* Left: calendar, today's classes, recent activity */}
+        <div className="flex flex-col gap-4">
+          <WeekStrip todayStr={todayStr} classCount={todaysClasses.length} />
+          <TodaysClasses classes={todaysClasses} />
+          <ActivityFeed events={result.productEvents} />
+        </div>
+
+        {/* Middle: numbers and charts */}
+        <div className="flex flex-col gap-4">
+          <StatCards studentCount={result.studentCount} attendanceRate={attendanceRate} pendingFeesTotal={pendingFeesTotal} monthlyCollected={monthlyCollected} />
+          <AttendanceRing rate={attendanceRate} present={presentToday} total={result.todayAttendance.length} />
+          <FeeCollectionChart data={feeChartData} />
+          <AttendanceChart data={attendanceChartData} />
+        </div>
+
+        {/* Right: greeting and AI assistant (first on phones) */}
+        <div className="order-first flex flex-col gap-4 xl:order-none">
+          <GreetingCard name={userContext?.fullName ?? ''} orgName={userContext?.organization.name ?? 'your center'} actions={quickActions} />
+          <AiAssistant />
+        </div>
       </div>
     </div>
+  )
+}
   )
 }
