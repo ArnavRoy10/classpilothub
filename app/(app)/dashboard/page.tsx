@@ -69,7 +69,7 @@ export default async function DashboardPage() {
           supabase.from('attendance').select('status, date').eq('organization_id', organizationId).gte('date', weekAgo.toISOString().slice(0, 10)),
           supabase.from('student_fees').select('amount').eq('organization_id', organizationId).neq('status', 'paid'),
           
-          // FIXED: Changed dot notation to arrow representation for nested database relationships
+          // FIXED: Uses arrows (->) to filter properties belonging inside the relation object path setup
           supabase.from('payments').select('amount, payment_date, student_fees!inner(organization_id)').eq('student_fees->organization_id', organizationId).gte('payment_date', monthStart),
           supabase.from('payments').select('amount, payment_date, student_fees!inner(organization_id)').eq('student_fees->organization_id', organizationId).gte('payment_date', sixMonthsAgo.toISOString()),
           
@@ -168,14 +168,14 @@ export default async function DashboardPage() {
       {userContext && <ActivationFeedback />}
 
       <div className="grid grid-cols-1 items-start gap-4 xl:grid-cols-[1fr_1.25fr_1fr]">
-        {/* Left Columns: calendar strip, upcoming class lists, and live changes activity feed */}
+        {/* Left Column: calendar, today's classes, recent activity */}
         <div className="flex flex-col gap-4">
           <WeekStrip todayStr={todayStr} classCount={todaysClasses.length} />
           <TodaysClasses classes={todaysClasses} />
           <ActivityFeed events={result.productEvents} />
         </div>
 
-        {/* Middle Columns: data points overview boxes and metric performance widgets */}
+        {/* Middle Column: numbers and charts */}
         <div className="flex flex-col gap-4">
           <StatCards
             studentCount={result.studentCount}
@@ -188,5 +188,12 @@ export default async function DashboardPage() {
           <AttendanceChart data={attendanceChartData} />
         </div>
 
-        {/* Right Columns: welcome banner dashboard menu utilities alongside active chat AI assistant panels */}
+        {/* Right Column: greeting and AI assistant (first on phones) */}
         <div className="order-first flex flex-col gap-4 xl:order-none">
+          <GreetingCard name={userContext?.fullName ?? ''} orgName={userContext?.organization.name ?? 'your center'} actions={quickActions} />
+          <AiAssistant />
+        </div>
+      </div>
+    </div>
+  )
+}
