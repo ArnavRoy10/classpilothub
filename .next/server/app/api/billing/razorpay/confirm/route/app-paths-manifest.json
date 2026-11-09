@@ -1,0 +1,3 @@
+{
+  "/api/billing/razorpay/confirm/route": "app/api/billing/razorpay/confirm/route.js"
+}

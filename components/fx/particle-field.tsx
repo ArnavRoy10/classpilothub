@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react'
 import { cn } from '@/lib/utils'
 
-// Light canvas particle field. Fewer dots on phones, pauses when off-screen,
+// Light canvas particle field in the brand colours. Fewer dots on phones, pauses when off-screen,
 // and draws a single still frame for reduced-motion users.
 export function ParticleField({ className }: { className?: string }) {
   const ref = useRef<HTMLCanvasElement>(null)
@@ -16,8 +16,11 @@ export function ParticleField({ className }: { className?: string }) {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const dpr = Math.min(window.devicePixelRatio || 1, 2)
     const count = window.innerWidth < 768 ? 36 : 80
+    const styles = getComputedStyle(document.documentElement)
+    const hueA = Number(styles.getPropertyValue('--h2')) || 88
+    const hueB = Number(styles.getPropertyValue('--h1')) || 42
     const points = Array.from({ length: count }, () => ({
-      x: Math.random(), y: Math.random(), z: 0.25 + Math.random() * 0.75, speed: 0.00003 + Math.random() * 0.00007, hue: Math.random() > 0.5 ? 200 : 285,
+      x: Math.random(), y: Math.random(), z: 0.25 + Math.random() * 0.75, speed: 0.00003 + Math.random() * 0.00007, hue: Math.random() > 0.5 ? hueA : hueB,
     }))
     let width = 0
     let height = 0
@@ -39,7 +42,7 @@ export function ParticleField({ className }: { className?: string }) {
         p.y -= p.speed * p.z * step
         if (p.y < -0.02) { p.y = 1.02; p.x = Math.random() }
         ctx!.beginPath()
-        ctx!.fillStyle = `hsla(${p.hue}, 95%, 78%, ${0.18 + p.z * 0.5})`
+        ctx!.fillStyle = `oklch(0.88 0.12 ${p.hue} / ${(0.18 + p.z * 0.5).toFixed(2)})`
         ctx!.arc(p.x * width, p.y * height, 0.6 + p.z * 1.6, 0, Math.PI * 2)
         ctx!.fill()
       }

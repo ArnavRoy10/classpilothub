@@ -10,8 +10,7 @@ type Audience = {
   points: string[]
   href: string
   cta: string
-  accent: string
-  glow: string
+  hue: string
 }
 
 const audiences: Audience[] = [
@@ -22,8 +21,7 @@ const audiences: Audience[] = [
     points: ['Keep every student and guardian in one place', 'Mark attendance in seconds', 'Track fees and send reminders'],
     href: '/signup?plan=Solo%20Tutor',
     cta: 'Start as a tutor',
-    accent: 'from-cyan-400/25 via-sky-500/10 to-transparent',
-    glow: 'text-cyan-300',
+    hue: 'var(--h2)',
   },
   {
     title: 'Individual Teacher',
@@ -32,8 +30,7 @@ const audiences: Audience[] = [
     points: ['Batches and timetable that stay in sync', 'Tests, marks and result sheets', 'Announcements students actually see'],
     href: '/signup?plan=Solo%20Tutor',
     cta: 'Start as a teacher',
-    accent: 'from-violet-400/25 via-indigo-500/10 to-transparent',
-    glow: 'text-violet-300',
+    hue: 'var(--h1)',
   },
   {
     title: 'Coaching Center',
@@ -42,8 +39,7 @@ const audiences: Audience[] = [
     points: ['Separate logins for teachers and students', 'Choose what each person can see and change', 'Fees, reports and billing in one dashboard'],
     href: '/signup?plan=Starter',
     cta: 'Start as a center',
-    accent: 'from-fuchsia-400/25 via-pink-500/10 to-transparent',
-    glow: 'text-fuchsia-300',
+    hue: 'var(--h3)',
   },
 ]
 
@@ -61,12 +57,13 @@ export function Audiences() {
       <div className="mt-12 grid gap-6 md:grid-cols-3">
         {audiences.map((item, index) => {
           const Icon = item.icon
+          const tint = `oklch(0.86 0.13 ${item.hue})`
           return (
             <Reveal key={item.title} delay={index * 120} className={index === 1 ? 'md:-translate-y-4' : undefined}>
               <TiltCard className="h-full rounded-2xl">
                 <div className="glass relative flex h-full flex-col overflow-hidden rounded-2xl p-6">
-                  <div aria-hidden="true" className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${item.accent}`} />
-                  <span className={`relative grid size-12 place-items-center rounded-xl bg-white/5 ring-1 ring-white/10 ${item.glow}`}>
+                  <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ backgroundImage: `linear-gradient(135deg, oklch(0.7 0.16 ${item.hue} / 25%), transparent 65%)` }} />
+                  <span className="relative grid size-12 place-items-center rounded-xl bg-white/5 ring-1 ring-white/10" style={{ color: tint }}>
                     <Icon className="size-6" aria-hidden="true" />
                   </span>
                   <h3 className="relative mt-5 font-display text-xl font-semibold">{item.title}</h3>
@@ -74,12 +71,12 @@ export function Audiences() {
                   <ul className="relative mt-5 flex flex-1 flex-col gap-2.5">
                     {item.points.map((point) => (
                       <li key={point} className="flex items-start gap-2 text-sm">
-                        <Check className={`mt-0.5 size-4 shrink-0 ${item.glow}`} aria-hidden="true" />
+                        <Check className="mt-0.5 size-4 shrink-0" style={{ color: tint }} aria-hidden="true" />
                         <span>{point}</span>
                       </li>
                     ))}
                   </ul>
-                  <Link href={item.href} className={`relative mt-6 inline-flex items-center gap-1.5 text-sm font-medium ${item.glow} hover:underline`}>
+                  <Link href={item.href} className="relative mt-6 inline-flex items-center gap-1.5 text-sm font-medium hover:underline" style={{ color: tint }}>
                     {item.cta}
                     <ArrowRight className="size-4" aria-hidden="true" />
                   </Link>

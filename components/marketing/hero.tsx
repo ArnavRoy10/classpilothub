@@ -7,6 +7,7 @@ import { ParticleField } from '@/components/fx/particle-field'
 import { HeroScene } from '@/components/fx/hero-scene'
 import { TiltCard } from '@/components/fx/tilt-card'
 import { Reveal } from '@/components/fx/reveal'
+import { WordReveal } from '@/components/fx/word-reveal'
 
 const highlights = ['No setup fees', '14-day free trial', 'Cancel anytime']
 
@@ -24,8 +25,10 @@ export function Hero() {
             Built for tutors, teachers &amp; coaching centers
           </span>
           <h1 className="font-display text-5xl leading-[1.04] font-bold tracking-tight text-balance text-foreground sm:text-6xl lg:text-7xl">
-            Run the class.
-            <span className="text-gradient block pb-1">Not the chaos.</span>
+            <WordReveal text="Run the class." />
+            <span className="block pb-1">
+              <WordReveal text="Not the chaos." delay={350} wordClassName="text-gradient" />
+            </span>
           </h1>
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-pretty text-muted-foreground">
             ClassPilot gives tutors and coaching centers one clear workspace for students, batches, attendance, fees, and results — so every day starts with less chasing and more teaching.

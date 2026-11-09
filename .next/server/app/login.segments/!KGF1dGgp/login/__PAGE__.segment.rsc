@@ -1,0 +1,23 @@
+1:"$Sreact.fragment"
+2:I[47257,["/_next/static/chunks/1on9o2-2fiais.js","/_next/static/chunks/2hkwaqv8sille.js"],"ClientPageRoot"]
+3:I[23426,["/_next/static/chunks/1on9o2-2fiais.js","/_next/static/chunks/2hkwaqv8sille.js","/_next/static/chunks/0axdrs6tow-4n.js","/_next/static/chunks/1a38gk0k4aown.js","/_next/static/chunks/1rhxqhbuehpmn.js","/_next/static/chunks/3ohd_km1bfqzc.js","/_next/static/chunks/0p9rdvipjg9h4.js"],"default"]
+6:I[97367,["/_next/static/chunks/1on9o2-2fiais.js","/_next/static/chunks/2hkwaqv8sille.js"],"OutletBoundary"]
+7:"$Sreact.suspense"
+b:I[97367,["/_next/static/chunks/1on9o2-2fiais.js","/_next/static/chunks/2hkwaqv8sille.js"],"ViewportBoundary"]
+c:I[97367,["/_next/static/chunks/1on9o2-2fiais.js","/_next/static/chunks/2hkwaqv8sille.js"],"MetadataBoundary"]
+e:I[39756,["/_next/static/chunks/1on9o2-2fiais.js","/_next/static/chunks/2hkwaqv8sille.js"],"default"]
+f:I[37457,["/_next/static/chunks/1on9o2-2fiais.js","/_next/static/chunks/2hkwaqv8sille.js"],"default"]
+a:X
+11:X
+11:C
+0:{"buildId":"Czj46_b6bbD4ZfZudX2EC","data":[{"rsc":["$","$1","c",{"children":[["$","$L2",null,{"Component":"$3","serverProvidedParams":{"searchParams":{},"params":{},"promises":["$@4","$@5"]}}],[["$","script","script-0",{"src":"/_next/static/chunks/1a38gk0k4aown.js","async":true}],["$","script","script-1",{"src":"/_next/static/chunks/1rhxqhbuehpmn.js","async":true}],["$","script","script-2",{"src":"/_next/static/chunks/3ohd_km1bfqzc.js","async":true}],["$","script","script-3",{"src":"/_next/static/chunks/0p9rdvipjg9h4.js","async":true}]],["$","$L6",null,{"children":["$","$7",null,{"name":"Next.MetadataOutlet","children":"$@8"}]}]]}],"isPartial":"$@9","staleTime":"$a","varyParams":null},{"rsc":["$","$1","h",{"children":[null,["$","$Lb",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","div",null,{"hidden":true,"children":["$","$Lc",null,{"children":["$","$7",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"Account access | ClassPilot"}],["$","meta","1",{"name":"description","content":"Manage students, teachers, batches, fees, attendance and results for your coaching center."}],["$","meta","2",{"name":"robots","content":"noindex, nofollow"}],["$","meta","3",{"name":"google-site-verification","content":"wJlZ9wB3R4_7pYdivb0csD8PfdxfjDxZOgVMH2pN-CM"}]]}]}]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"isPartial":"$@d","staleTime":"$a","varyParams":null},{"rsc":["$","$1","c",{"children":[null,["$","$Le",null,{"parallelRouterKey":"children","template":["$","$Lf",null,{}]}]]}],"isPartial":"$@10","staleTime":"$a","varyParams":"$11"}],"isUpgradeableISRFallback":false,"a":"$@12","rootVaryParams":null,"needsRuntimeRequest":"$@13"}
+4:{}
+5:"$0:data:0:rsc:props:children:0:props:serverProvidedParams:params"
+8:null
+13:true
+a:300
+a:C
+12:0
+d:"$undefined"
+10:"$undefined"
+9:"$undefined"
