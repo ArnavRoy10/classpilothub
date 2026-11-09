@@ -50,7 +50,7 @@ export function AiAssistant() {
         {messages.length === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-4 py-4 text-center">
             <div aria-hidden="true" className="relative size-24 animate-float">
-              <div className="absolute inset-0 rounded-full" style={{ background: 'radial-gradient(circle at 30% 24%, oklch(0.9 0.08 300), oklch(0.5 0.22 295) 38%, oklch(0.22 0.12 290) 75%)', boxShadow: '0 0 50px oklch(0.55 0.22 295 / 55%), inset -10px -14px 28px oklch(0 0 0 / 55%)' }} />
+              <div className="orb-sm absolute inset-0 rounded-full" />
               <div className="absolute left-[20%] top-[14%] h-[20%] w-[32%] rotate-[-24deg] rounded-full bg-white/35 blur-[3px]" />
             </div>
             <p className="max-w-[16rem] text-sm text-muted-foreground">Ask about today&apos;s attendance, fees, classes — or how to do anything in ClassPilot.</p>
