@@ -17,8 +17,8 @@ export function AttendanceRing({ rate, present, total }: { rate: number | null; 
           <svg viewBox="0 0 100 100" className="size-full -rotate-90" role="img" aria-label={rate === null ? 'No attendance recorded today' : `${rate}% present today`}>
             <defs>
               <linearGradient id="ring-gradient" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stopColor="oklch(0.82 0.13 205)" />
-                <stop offset="100%" stopColor="oklch(0.72 0.22 330)" />
+                <stop offset="0%" style={{ stopColor: 'oklch(0.84 0.14 var(--h2))' }} />
+                <stop offset="100%" style={{ stopColor: 'oklch(0.72 0.2 var(--h3))' }} />
               </linearGradient>
             </defs>
             <circle cx="50" cy="50" r={radius} fill="none" strokeWidth="9" className="stroke-muted" />
