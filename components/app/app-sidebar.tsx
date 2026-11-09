@@ -29,9 +29,9 @@ export function AppSidebar({ userContext }: { userContext: UserContext | null })
   const pathname = usePathname()
 
   return (
-    	<Sidebar variant="floating" collapsible="icon">
+    <Sidebar variant="floating" collapsible="icon">
       <SidebarHeader>
-        <Link href="/dashboard" className="block overflow-hidden px-2 py-1.5" aria-label="ClassPilot dashboard"">
+        <Link href="/dashboard" className="block overflow-hidden px-2 py-1.5" aria-label="ClassPilot dashboard">
           <Logo />
         </Link>
       </SidebarHeader>
