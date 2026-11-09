@@ -23,13 +23,7 @@ export function GreetingCard({ name, orgName, actions }: { name: string; orgName
           <p className="mt-1 text-sm text-muted-foreground">Ready to run {orgName} today?</p>
         </div>
         <div aria-hidden="true" className="relative size-20 shrink-0 animate-float">
-          <div
-            className="absolute inset-0 rounded-full"
-            style={{
-              background: 'radial-gradient(circle at 30% 24%, oklch(0.97 0.04 230), oklch(0.68 0.2 272) 34%, oklch(0.32 0.17 285) 68%, oklch(0.16 0.08 290))',
-              boxShadow: '0 0 40px oklch(0.62 0.22 285 / 55%), inset -8px -12px 24px oklch(0 0 0 / 50%)',
-            }}
-          />
+          <div className="orb-sm absolute inset-0 rounded-full" />
           <div className="absolute left-[18%] top-[12%] h-[22%] w-[34%] rotate-[-24deg] rounded-full bg-white/35 blur-[3px]" />
         </div>
       </div>
