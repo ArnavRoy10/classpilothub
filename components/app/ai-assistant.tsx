@@ -8,6 +8,7 @@ import { Card } from '@/components/ui/card'
 type Message = { role: 'user' | 'assistant'; content: string }
 
 const TIPS = ['Summarise my day', 'How are fees doing?', 'How do I add a batch?']
+const WAVE = [0.35, 0.6, 0.9, 0.5, 1, 0.7, 0.45, 0.85, 0.55, 0.4, 0.65]
 
 // Chat assistant that knows a summary of this organisation (counts, today's attendance, fees, classes)
 // and how ClassPilot works. It only answers questions: it cannot change any data.
@@ -40,7 +41,8 @@ export function AiAssistant() {
   }
 
   return (
-    <Card className="min-h-[420px]">
+    <Card className="min-h-[380px]">
+      <style>{'@keyframes ai-wave{0%,100%{transform:scaleY(.3)}50%{transform:scaleY(1)}}'}</style>
       <div className="flex items-center justify-between px-(--card-spacing)">
         <h2 className="flex items-center gap-2 font-display text-base font-semibold"><Sparkles className="size-4 text-neon" aria-hidden="true" />AI Assistant</h2>
         {messages.length > 0 && <button type="button" onClick={() => setMessages([])} className="text-xs text-muted-foreground hover:text-foreground">Clear</button>}
@@ -48,10 +50,20 @@ export function AiAssistant() {
 
       <div className="flex flex-1 flex-col gap-3 overflow-y-auto px-(--card-spacing)" style={{ maxHeight: 340 }} aria-live="polite">
         {messages.length === 0 ? (
-          <div className="flex flex-1 flex-col items-center justify-center gap-4 py-4 text-center">
-            <div aria-hidden="true" className="relative size-24 animate-float">
-              <div className="orb-sm absolute inset-0 rounded-full" />
-              <div className="absolute left-[20%] top-[14%] h-[20%] w-[32%] rotate-[-24deg] rounded-full bg-white/35 blur-[3px]" />
+          <div className="flex flex-1 flex-col items-center justify-center gap-5 py-4 text-center">
+            <div aria-hidden="true" className="flex h-14 items-center gap-1.5">
+              {WAVE.map((height, index) => (
+                <span
+                  key={index}
+                  className="w-1 origin-center rounded-full"
+                  style={{
+                    height: `${height * 100}%`,
+                    background: 'linear-gradient(180deg, oklch(0.86 0.13 var(--h2)), oklch(0.72 0.2 var(--h3)))',
+                    animation: 'ai-wave 1.5s ease-in-out infinite',
+                    animationDelay: `${index * 110}ms`,
+                  }}
+                />
+              ))}
             </div>
             <p className="max-w-[16rem] text-sm text-muted-foreground">Ask about today&apos;s attendance, fees, classes — or how to do anything in ClassPilot.</p>
           </div>
