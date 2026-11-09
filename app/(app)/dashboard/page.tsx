@@ -10,7 +10,6 @@ import { OnboardingChecklist, type ActivationStep } from '@/components/app/onboa
 import { ActivationFeedback } from '@/components/app/activation-feedback'
 import { GreetingCard } from '@/components/app/greeting-card'
 import { WeekStrip } from '@/components/app/week-strip'
-import { AttendanceRing } from '@/components/app/attendance-ring'
 import { AiAssistant } from '@/components/app/ai-assistant'
 import { hasPermission } from '@/lib/permissions'
 import { getUserContext } from '@/lib/supabase/user-context'
@@ -119,6 +118,7 @@ export default async function DashboardPage() {
   ].filter((action) => !userContext || hasPermission(userContext, action.key))
 
   const presentToday = result.todayAttendance.filter((a) => a.status === 'present').length
+  const canMarkAttendance = !userContext || hasPermission(userContext, 'attendance')
 
   return (
     <div className="flex flex-col gap-6">
@@ -135,28 +135,42 @@ export default async function DashboardPage() {
       ] as ActivationStep[]} />}
       {userContext && <ActivationFeedback />}
 
-      <div className="grid grid-cols-1 items-start gap-4 xl:grid-cols-[1fr_1.25fr_1fr]">
+      <div className="grid grid-cols-1 items-stretch gap-4 xl:grid-cols-[1fr_1.25fr_1fr]">
         {/* Left: calendar, today's classes, recent activity */}
         <div className="flex flex-col gap-4">
           <WeekStrip todayStr={todayStr} classCount={todaysClasses.length} />
           <TodaysClasses classes={todaysClasses} />
-          <ActivityFeed events={result.productEvents} />
+          <div className="flex flex-1 flex-col [&>[data-slot=card]]:flex-1">
+            <ActivityFeed events={result.productEvents} />
+          </div>
         </div>
 
-        {/* Middle: numbers and charts */}
+        {/* Middle: attendance dial, numbers, fee chart */}
         <div className="flex flex-col gap-4">
-          <StatCards studentCount={result.studentCount} attendanceRate={attendanceRate} pendingFeesTotal={pendingFeesTotal} monthlyCollected={monthlyCollected} />
-          <AttendanceRing rate={attendanceRate} present={presentToday} total={result.todayAttendance.length} />
-          <FeeCollectionChart data={feeChartData} />
-          <AttendanceChart data={attendanceChartData} />
+          <StatCards
+            studentCount={result.studentCount}
+            attendanceRate={attendanceRate}
+            presentToday={presentToday}
+            markedToday={result.todayAttendance.length}
+            pendingFeesTotal={pendingFeesTotal}
+            monthlyCollected={monthlyCollected}
+            attendanceHref={canMarkAttendance ? '/attendance' : undefined}
+          />
+          <div className="flex flex-1 flex-col [&>[data-slot=card]]:flex-1">
+            <FeeCollectionChart data={feeChartData} />
+          </div>
         </div>
 
         {/* Right: greeting and AI assistant (first on phones) */}
         <div className="order-first flex flex-col gap-4 xl:order-none">
           <GreetingCard name={userContext?.fullName ?? ''} orgName={userContext?.organization.name ?? 'your center'} actions={quickActions} />
-          <AiAssistant />
+          <div className="flex flex-1 flex-col [&>[data-slot=card]]:flex-1">
+            <AiAssistant />
+          </div>
         </div>
       </div>
+
+      <AttendanceChart data={attendanceChartData} />
     </div>
   )
 }
