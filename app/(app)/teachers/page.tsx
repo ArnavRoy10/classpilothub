@@ -18,6 +18,18 @@ type Teacher = { id: string; full_name: string; email: string; phone: string | n
 type FormState = { full_name: string; phone: string; subject: string; status: 'active' | 'inactive' }
 const emptyForm: FormState = { full_name: '', phone: '', subject: '', status: 'active' }
 
+// Reads a row even if some optional columns do not exist in the database.
+function normaliseTeacher(row: Record<string, unknown>): Teacher {
+  return {
+    id: String(row.id),
+    full_name: String(row.full_name ?? ''),
+    email: String(row.email ?? ''),
+    phone: (row.phone as string | null | undefined) ?? null,
+    subject: String(row.subject ?? ''),
+    status: row.status === 'inactive' ? 'inactive' : 'active',
+  }
+}
+
 function initials(name: string) { return name.split(' ').map((n) => n[0]).slice(0, 2).join('').toUpperCase() }
 
 async function callMembers(method: 'POST' | 'PATCH' | 'DELETE' | 'GET', body?: unknown, query = '') {
@@ -61,9 +73,13 @@ export default function TeachersPage() {
 
   async function loadTeachers() {
     setLoading(true)
-    const { data, error } = await supabase.from('teachers').select('id, full_name, email, phone, subject, status').order('created_at', { ascending: false })
-    if (error) toast.error('Unable to load teachers')
-    setTeachers((data ?? []) as Teacher[])
+    let result = await supabase.from('teachers').select('*').order('created_at', { ascending: false })
+    if (result.error) result = await supabase.from('teachers').select('*') // the table may have no created_at column
+    if (result.error) {
+      console.error('[teachers] could not load', result.error)
+      toast.error(`Unable to load teachers: ${result.error.message}`)
+    }
+    setTeachers(((result.data ?? []) as Record<string, unknown>[]).map(normaliseTeacher))
     setLoading(false)
   }
   useEffect(() => { void loadTeachers() }, [])
