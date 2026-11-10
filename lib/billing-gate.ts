@@ -1,5 +1,6 @@
 import 'server-only'
 
+import { cache } from 'react'
 import { NextResponse } from 'next/server'
 import { getAdminClient } from '@/lib/supabase/admin'
 import { getUserContext } from '@/lib/supabase/user-context'
@@ -7,7 +8,7 @@ import { TRIAL_DAYS, computeBillingState, type BillingState } from '@/lib/billin
 
 const DAY_MS = 86_400_000
 
-export async function getOrganizationBillingState(organizationId: string, organizationPlan?: string | null): Promise<BillingState> {
+export const getOrganizationBillingState = cache(async (organizationId: string, organizationPlan?: string | null): Promise<BillingState> => {
   // Admin client on purpose: teachers, students and parents may not be able to read the
   // subscriptions table under RLS, but they must still be locked out when the bill is unpaid.
   // organizationId always comes from the signed-in user's own profile (getUserContext).
@@ -31,7 +32,7 @@ export async function getOrganizationBillingState(organizationId: string, organi
   }
 
   return computeBillingState(subscription, organizationPlan)
-}
+})
 
 // For API routes: returns a 402 response when the organisation is suspended for non-payment, otherwise null.
 export async function organizationSuspendedResponse() {
