@@ -18,6 +18,22 @@ import { trackProductEvent } from '@/lib/product-events'
 type Student = { id: string; full_name: string; student_code: string; batch: string | null; guardian_name: string | null; guardian_phone: string | null; fee_status: 'paid' | 'pending' | 'overdue'; attendance: number }
 type FormState = { full_name: string; student_code: string; batch: string; guardian_name: string; guardian_phone: string }
 const emptyForm: FormState = { full_name: '', student_code: '', batch: '', guardian_name: '', guardian_phone: '' }
+
+// Reads a row even if some optional columns do not exist in the database.
+function normaliseStudent(row: Record<string, unknown>): Student {
+  const fee = String(row.fee_status ?? 'pending')
+  return {
+    id: String(row.id),
+    full_name: String(row.full_name ?? ''),
+    student_code: String(row.student_code ?? ''),
+    batch: (row.batch as string | null | undefined) ?? null,
+    guardian_name: (row.guardian_name as string | null | undefined) ?? null,
+    guardian_phone: (row.guardian_phone as string | null | undefined) ?? null,
+    fee_status: fee === 'paid' || fee === 'overdue' ? fee : 'pending',
+    attendance: Number(row.attendance ?? 0) || 0,
+  }
+}
+
 async function callMembers(method: 'POST' | 'PATCH' | 'DELETE' | 'GET', body?: unknown, query = '') {
   const response = await fetch(`/api/members${query}`, { method, headers: { 'content-type': 'application/json' }, body: body ? JSON.stringify(body) : undefined })
   const result = (await response.json().catch(() => ({}))) as Record<string, unknown> & { error?: string }
@@ -50,7 +66,17 @@ export default function StudentsPage() {
     }
     void loadLimit()
   }, [])
-  async function loadStudents() { setLoading(true); const { data, error } = await supabase.from('students').select('id, full_name, student_code, batch, guardian_name, guardian_phone, fee_status, attendance').order('created_at', { ascending: false }); if (error) toast.error('Unable to load students'); setStudents((data ?? []) as Student[]); setLoading(false) }
+  async function loadStudents() {
+    setLoading(true)
+    let result = await supabase.from('students').select('*').order('created_at', { ascending: false })
+    if (result.error) result = await supabase.from('students').select('*') // the table may have no created_at column
+    if (result.error) {
+      console.error('[students] could not load', result.error)
+      toast.error(`Unable to load students: ${result.error.message}`)
+    }
+    setStudents(((result.data ?? []) as Record<string, unknown>[]).map(normaliseStudent))
+    setLoading(false)
+  }
   useEffect(() => { void loadStudents() }, [])
   function startCreate() { setEditingId(null); setForm(emptyForm); setAccess(emptyAccess('student')); setHasLogin(true); setOpen(true) }
   async function startEdit(s: Student) {
