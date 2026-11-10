@@ -20,7 +20,10 @@ export async function updateSession(request: NextRequest) {
     },
   )
 
-  const { data: { user } } = await supabase.auth.getUser()
+  // getClaims() verifies the login token locally (and refreshes it when needed) without a network call.
+  // Real data access is still checked by getUserContext() and the database security rules.
+  const { data: claimsData } = await supabase.auth.getClaims()
+  const user = claimsData?.claims?.sub ? claimsData.claims : null
   const pathname = request.nextUrl.pathname
   const protectedRoute = pathname === '/dashboard' || ['/students', '/teachers', '/batches', '/attendance', '/tests', '/results', '/timetable', '/fees', '/announcements', '/reports', '/settings', '/communications', '/portal', '/founder', '/admin'].some((route) => pathname === route || pathname.startsWith(`${route}/`))
 
