@@ -2,7 +2,9 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Activity, ArrowRight, Building2, CreditCard, Users } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { FounderPhoto } from '@/components/founder/founder-photo'
 import { requireFounderAdmin, writeFounderAudit } from '@/lib/founder-admin'
+import { FOUNDER } from '@/lib/founder-profile'
 import { getAdminClient } from '@/lib/supabase/admin'
 import { computeBillingState } from '@/lib/billing-state'
 
@@ -42,10 +44,13 @@ export default async function FounderAdminPage() {
 
   return (
     <main className="mx-auto w-full max-w-6xl space-y-6">
-      <header className="flex flex-col gap-2 border-b border-border pb-5">
-        <p className="text-sm font-medium text-primary">Founder console</p>
-        <h1 className="text-3xl font-semibold tracking-tight">ClassPilot operations</h1>
-        <p className="max-w-2xl text-sm leading-6 text-muted-foreground">Open any organization to edit it, change its plan and limits, give free days, make it free, or manage its members. Every change is written to the audit log.</p>
+      <header className="flex flex-col gap-4 border-b border-border pb-5 sm:flex-row sm:items-center">
+        <FounderPhoto size={72} />
+        <div className="flex flex-col gap-1">
+          <p className="text-sm font-medium text-primary">Founder console · {FOUNDER.name}</p>
+          <h1 className="text-3xl font-semibold tracking-tight">ClassPilot operations</h1>
+          <p className="max-w-2xl text-sm leading-6 text-muted-foreground">Open any organization to edit it, change its plan and limits, give free days, make it free, or manage its members. Every change is written to the audit log.</p>
+        </div>
       </header>
 
       <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4" aria-label="Founder metrics">
