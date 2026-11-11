@@ -10,7 +10,10 @@ export default function MarketingLayout({
     <div className="flex min-h-dvh flex-col">
       <SiteHeader />
       <main className="flex-1">{children}</main>
-      <SiteFooter />
+      {/* z-10 keeps the footer above the fixed scroll-sky background on the homepage */}
+      <div className="relative z-10 bg-background/70 backdrop-blur-sm">
+        <SiteFooter />
+      </div>
     </div>
   )
 }
