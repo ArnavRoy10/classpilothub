@@ -13,7 +13,7 @@ const highlights = ['No setup fees', '14-day free trial', 'Cancel anytime']
 
 export function Hero() {
   return (
-    <section className="relative isolate overflow-hidden">
+    <section className="relative isolate -mt-[68px] overflow-hidden pt-[68px]">
       <div aria-hidden="true" className="aurora absolute inset-0 -z-20" />
       <div aria-hidden="true" className="grid-bg absolute inset-x-0 top-0 -z-10 h-[680px]" />
       <ParticleField className="-z-10" />
