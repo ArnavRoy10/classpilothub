@@ -38,13 +38,34 @@ export default function TimetablePage() {
     const { data: profile } = await supabase.from("profiles").select("organization_id").eq("id", user.id).single()
     if (!profile?.organization_id) return setLoading(false)
     setOrganizationId(profile.organization_id)
-    const [{ data: scheduleData, error }, { data: batchData }, { data: teacherData }] = await Promise.all([
-      supabase.from("schedules").select("id,batch_id,teacher_id,subject,day_of_week,start_time,end_time,room,notes,batch:batches(name),teacher:teachers(full_name)").order("day_of_week").order("start_time"),
-      supabase.from("batches").select("id,name").order("name"),
-      supabase.from("teachers").select("id,full_name").order("full_name"),
+
+    // Plain queries (no joins): batch and teacher names are matched up here,
+    // so a missing relationship between the tables cannot break the page.
+    const [scheduleResult, batchResult, teacherResult] = await Promise.all([
+      supabase.from("schedules").select("*"),
+      supabase.from("batches").select("id,name"),
+      supabase.from("teachers").select("id,full_name"),
     ])
-    if (error) toast.error("Could not load the timetable")
-    setSchedules((scheduleData ?? []) as Schedule[]); setBatches(batchData ?? []); setTeachers(teacherData ?? []); setLoading(false)
+    const failure = scheduleResult.error ?? batchResult.error ?? teacherResult.error
+    if (failure) {
+      console.error("[timetable] could not load", failure)
+      toast.error(`Could not load the timetable: ${failure.message}`)
+    }
+    const batchRows = (batchResult.data ?? []) as Option[]
+    const teacherRows = (teacherResult.data ?? []) as Option[]
+    const batchNames = new Map(batchRows.map((item) => [item.id, item.name ?? ""]))
+    const teacherNames = new Map(teacherRows.map((item) => [item.id, item.full_name ?? ""]))
+    const rows = ((scheduleResult.data ?? []) as Schedule[])
+      .map((row) => ({
+        ...row,
+        batch: batchNames.has(row.batch_id) ? { name: batchNames.get(row.batch_id) as string } : null,
+        teacher: teacherNames.has(row.teacher_id) ? { full_name: teacherNames.get(row.teacher_id) as string } : null,
+      }))
+      .sort((a, b) => WEEK_DAYS.indexOf(a.day_of_week) - WEEK_DAYS.indexOf(b.day_of_week) || String(a.start_time).localeCompare(String(b.start_time)))
+    setSchedules(rows)
+    setBatches(batchRows)
+    setTeachers(teacherRows)
+    setLoading(false)
   }, [supabase])
   React.useEffect(() => { void loadData() }, [loadData])
   const update = (field: keyof FormState, value: string) => setForm((current) => ({ ...current, [field]: value }))
