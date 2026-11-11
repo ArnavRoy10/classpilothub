@@ -14,7 +14,7 @@ const columns = [
   {
     title: 'Company',
     links: [
-      { label: 'About', href: '/#how-it-works' },
+      { label: 'About', href: '/about' },
       { label: 'Careers', href: 'mailto:hello@classpilot.app?subject=Careers' },
       { label: 'Contact', href: 'mailto:hello@classpilot.app' },
       { label: 'Marketing kit', href: '/marketing-kit' },
