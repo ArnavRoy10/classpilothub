@@ -18,14 +18,15 @@ const links = [
   { label: 'Pricing', href: '/pricing' },
   { label: 'How it works', href: '/#how-it-works' },
   { label: 'FAQ', href: '/#faq' },
+  { label: 'About', href: '/about' },
 ]
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false)
 
   return (
-        <header className="sticky top-0 z-40 w-full px-3 pt-3">
-        <div className="glass mx-auto flex h-14 max-w-6xl items-center justify-between gap-4 rounded-full px-4 sm:px-6">
+    <header className="sticky top-0 z-40 w-full px-3 pt-3">
+      <div className="glass mx-auto flex h-14 max-w-6xl items-center justify-between gap-4 rounded-full px-4 sm:px-6">
         <Link href="/" aria-label="ClassPilot home">
           <Logo />
         </Link>
