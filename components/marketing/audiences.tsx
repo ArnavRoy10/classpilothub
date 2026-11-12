@@ -2,6 +2,8 @@ import Link from 'next/link'
 import { ArrowRight, BookOpen, Building2, Check, GraduationCap, type LucideIcon } from 'lucide-react'
 import { TiltCard } from '@/components/fx/tilt-card'
 import { Reveal } from '@/components/fx/reveal'
+import { RichText } from '@/components/site/rich-text'
+import { getSiteContent } from '@/lib/site-content'
 
 type Audience = {
   title: string
@@ -43,15 +45,17 @@ const audiences: Audience[] = [
   },
 ]
 
-export function Audiences() {
+export async function Audiences() {
+  const { text } = await getSiteContent()
+
   return (
     <section className="relative mx-auto max-w-6xl px-4 py-20 sm:px-6" aria-labelledby="audiences-title">
       <Reveal className="mx-auto max-w-2xl text-center">
-        <p className="text-sm font-medium text-neon">Who it is for</p>
+        <p className="text-sm font-medium text-neon">{text['home.audiences.eyebrow']}</p>
         <h2 id="audiences-title" className="mt-2 font-display text-3xl font-bold tracking-tight text-balance sm:text-4xl">
-          One platform, three ways to teach
+          {text['home.audiences.title']}
         </h2>
-        <p className="mt-4 text-lg leading-relaxed text-muted-foreground">Whether you teach at a student&apos;s home or run a full center, ClassPilot fits the way you work.</p>
+        <p className="mt-4 text-lg leading-relaxed text-muted-foreground"><RichText text={text['home.audiences.body']} /></p>
       </Reveal>
 
       <div className="mt-12 grid gap-6 md:grid-cols-3">
