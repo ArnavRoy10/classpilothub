@@ -48,4 +48,3 @@ export const getSiteContent = cache(async () => {
 
   return { text, theme }
 })
-EOF
