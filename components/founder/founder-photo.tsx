@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { FOUNDER, initialsOf } from '@/lib/founder-profile'
 import { cn } from '@/lib/utils'
 
-export function FounderPhoto({ size = 64, shape = 'circle', className }: { size?: number; shape?: 'circle' | 'rounded'; className?: string }) {
+export function FounderPhoto({ size = 64, shape = 'circle', className, name = FOUNDER.name }: { size?: number; shape?: 'circle' | 'rounded'; className?: string; name?: string }) {
   const [failed, setFailed] = useState(false)
   const radius = shape === 'circle' ? 'rounded-full' : 'rounded-3xl'
 
@@ -13,11 +13,11 @@ export function FounderPhoto({ size = 64, shape = 'circle', className }: { size?
     return (
       <div
         role="img"
-        aria-label={FOUNDER.name}
+        aria-label={name}
         className={cn('grid shrink-0 place-items-center bg-primary/20 font-display font-semibold text-primary', radius, className)}
         style={{ width: size, height: size, fontSize: size / 3 }}
       >
-        {initialsOf(FOUNDER.name)}
+        {initialsOf(name)}
       </div>
     )
   }
@@ -25,7 +25,7 @@ export function FounderPhoto({ size = 64, shape = 'circle', className }: { size?
   return (
     <Image
       src={FOUNDER.photo}
-      alt={`Photo of ${FOUNDER.name}`}
+      alt={`Photo of ${name}`}
       width={size * 2}
       height={size * 2}
       onError={() => setFailed(true)}
