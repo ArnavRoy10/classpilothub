@@ -8,10 +8,13 @@ import { HeroScene } from '@/components/fx/hero-scene'
 import { TiltCard } from '@/components/fx/tilt-card'
 import { Reveal } from '@/components/fx/reveal'
 import { WordReveal } from '@/components/fx/word-reveal'
+import { RichText } from '@/components/site/rich-text'
+import { getSiteContent } from '@/lib/site-content'
 
-const highlights = ['No setup fees', '14-day free trial', 'Cancel anytime']
+export async function Hero() {
+  const { text } = await getSiteContent()
+  const highlights = [text['home.hero.h1'], text['home.hero.h2'], text['home.hero.h3']].filter(Boolean)
 
-export function Hero() {
   return (
     <section className="relative isolate -mt-[68px] overflow-hidden pt-[68px]">
       <div aria-hidden="true" className="aurora absolute inset-0 -z-20" />
@@ -22,27 +25,27 @@ export function Hero() {
         <div className="flex flex-col items-start">
           <span className="glass mb-6 inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-medium text-muted-foreground">
             <Sparkles className="size-3.5 text-neon" aria-hidden="true" />
-            Built for tutors, teachers &amp; coaching centers
+            {text['home.hero.badge']}
           </span>
           <h1 className="font-display text-5xl leading-[1.04] font-bold tracking-tight text-balance text-foreground sm:text-6xl lg:text-7xl">
-            <WordReveal text="Run the class." />
+            <WordReveal text={text['home.hero.line1']} />
             <span className="block pb-1">
-              <WordReveal text="Not the chaos." delay={350} wordClassName="text-gradient" />
+              <WordReveal text={text['home.hero.line2']} delay={350} wordClassName="text-gradient" />
             </span>
           </h1>
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-pretty text-muted-foreground">
-            ClassPilot gives tutors and coaching centers one clear workspace for students, batches, attendance, fees, and results — so every day starts with less chasing and more teaching.
+            <RichText text={text['home.hero.body']} />
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Magnetic>
               <Button size="lg" className="shadow-[0_0_40px_-6px] shadow-primary/70" render={<Link href="/signup" />}>
-                Start free trial
+                {text['home.hero.cta1']}
                 <ArrowRight data-icon="inline-end" />
               </Button>
             </Magnetic>
             <Magnetic>
-              <Button size="lg" variant="outline" className="glass border-white/15 bg-transparent" render={<a href="mailto:hello@classpilot.app?subject=ClassPilot%20demo" />}>
-                Book a demo
+              <Button size="lg" variant="outline" className="glass border-white/15 bg-transparent" render={<a href={`mailto:${text['site.contactEmail']}?subject=ClassPilot%20demo`} />}>
+                {text['home.hero.cta2']}
               </Button>
             </Magnetic>
           </div>
