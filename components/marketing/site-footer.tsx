@@ -1,46 +1,48 @@
 import Link from 'next/link'
 import { Logo } from '@/components/brand/logo'
+import { getSiteContent } from '@/lib/site-content'
 
-const columns = [
-  {
-    title: 'Product',
-    links: [
-      { label: 'Features', href: '/features' },
-      { label: 'Pricing', href: '/pricing' },
-      { label: 'How it works', href: '/#how-it-works' },
-      { label: 'FAQ', href: '/#faq' },
-    ],
-  },
-  {
-    title: 'Company',
-    links: [
-      { label: 'About', href: '/about' },
-      { label: 'Careers', href: 'mailto:hello@classpilot.app?subject=Careers' },
-      { label: 'Contact', href: 'mailto:hello@classpilot.app' },
-      { label: 'Marketing kit', href: '/marketing-kit' },
-    ],
-  },
-  {
-    title: 'Legal',
-    links: [
-      { label: 'Privacy', href: '/privacy' },
-      { label: 'Terms', href: '/terms' },
-      { label: 'Security', href: '/security' },
-      { label: 'Data policy', href: '/privacy#data' },
-    ],
-  },
-]
+export async function SiteFooter() {
+  const { text } = await getSiteContent()
+  const email = text['site.contactEmail']
 
-export function SiteFooter() {
+  const columns = [
+    {
+      title: 'Product',
+      links: [
+        { label: 'Features', href: '/features' },
+        { label: 'Pricing', href: '/pricing' },
+        { label: 'How it works', href: '/#how-it-works' },
+        { label: 'FAQ', href: '/#faq' },
+      ],
+    },
+    {
+      title: 'Company',
+      links: [
+        { label: 'About', href: '/about' },
+        { label: 'Careers', href: `mailto:${email}?subject=Careers` },
+        { label: 'Contact', href: `mailto:${email}` },
+        { label: 'Marketing kit', href: '/marketing-kit' },
+      ],
+    },
+    {
+      title: 'Legal',
+      links: [
+        { label: 'Privacy', href: '/privacy' },
+        { label: 'Terms', href: '/terms' },
+        { label: 'Security', href: '/security' },
+        { label: 'Data policy', href: '/privacy#data' },
+      ],
+    },
+  ]
+
   return (
     <footer className="border-t border-border bg-secondary/40">
       <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
         <div className="grid gap-10 md:grid-cols-[1.5fr_repeat(3,1fr)]">
           <div className="flex flex-col gap-4">
             <Logo />
-            <p className="max-w-xs text-sm leading-relaxed text-muted-foreground">
-              A focused workspace for coaching centers to manage people, classes, attendance, fees, and results in one place.
-            </p>
+            <p className="max-w-xs text-sm leading-relaxed text-muted-foreground">{text['footer.about']}</p>
           </div>
 
           {columns.map((column) => (
@@ -63,8 +65,8 @@ export function SiteFooter() {
         </div>
 
         <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-border pt-6 text-sm text-muted-foreground sm:flex-row">
-          <p>© {new Date().getFullYear()} ClassPilot. All rights reserved.</p>
-          <p>Built for coaching centers everywhere.</p>
+          <p>{text['footer.copyright'].replace('{year}', String(new Date().getFullYear()))}</p>
+          <p>{text['footer.tagline']}</p>
         </div>
       </div>
     </footer>
