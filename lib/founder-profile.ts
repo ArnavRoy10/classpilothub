@@ -4,7 +4,7 @@
 export const FOUNDER = {
   name: 'Arnav Roy',
   role: 'Founder, ClassPilot',
-  // Put your photo in the "public" folder with this exact file name (see the notes below the code).
+  // Put your photo in the "public" folder with this exact file name.
   photo: '/founder.jpg',
   email: 'hello@classpilot.app',
 
