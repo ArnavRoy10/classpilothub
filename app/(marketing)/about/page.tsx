@@ -6,8 +6,12 @@ import { Reveal } from '@/components/fx/reveal'
 import { TiltCard } from '@/components/fx/tilt-card'
 import { Magnetic } from '@/components/fx/magnetic'
 import { FounderPhoto } from '@/components/founder/founder-photo'
+import { RichText } from '@/components/site/rich-text'
 import { Cta } from '@/components/marketing/cta'
 import { FOUNDER } from '@/lib/founder-profile'
+import { getSiteContent } from '@/lib/site-content'
+
+export const revalidate = 60
 
 export const metadata: Metadata = {
   title: 'About',
@@ -15,7 +19,11 @@ export const metadata: Metadata = {
   alternates: { canonical: '/about' },
 }
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const { text } = await getSiteContent()
+  const story = [text['about.story1'], text['about.story2'], text['about.story3']].filter(Boolean)
+  const principles = [1, 2, 3].map((n) => ({ title: text[`about.p${n}.title`], text: text[`about.p${n}.text`] }))
+
   return (
     <>
       <section className="relative isolate overflow-hidden">
@@ -24,9 +32,9 @@ export default function AboutPage() {
           <div className="flex flex-col items-start">
             <p className="text-sm font-medium text-neon">About</p>
             <h1 className="mt-3 font-display text-4xl leading-[1.08] font-bold tracking-tight text-balance sm:text-6xl">
-              {FOUNDER.headline}
+              {text['about.headline']}
             </h1>
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-pretty text-muted-foreground">{FOUNDER.intro}</p>
+            <p className="mt-6 max-w-xl text-lg leading-relaxed text-pretty text-muted-foreground"><RichText text={text['about.intro']} /></p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Magnetic>
                 <Button size="lg" render={<Link href="/signup" />}>
@@ -35,7 +43,7 @@ export default function AboutPage() {
                 </Button>
               </Magnetic>
               <Magnetic>
-                <Button size="lg" variant="outline" className="glass border-white/15 bg-transparent" render={<a href={`mailto:${FOUNDER.email}`} />}>
+                <Button size="lg" variant="outline" className="glass border-white/15 bg-transparent" render={<a href={`mailto:${text['site.contactEmail']}`} />}>
                   <Mail data-icon="inline-start" />
                   Say hello
                 </Button>
@@ -46,10 +54,10 @@ export default function AboutPage() {
           <Reveal className="mx-auto w-full max-w-sm">
             <TiltCard className="rounded-3xl">
               <div className="glass rounded-3xl p-4">
-                <FounderPhoto size={320} shape="rounded" className="aspect-square h-auto w-full" />
+                <FounderPhoto size={320} shape="rounded" name={text['about.name']} className="aspect-square h-auto w-full" />
                 <div className="px-2 pt-4 pb-1">
-                  <p className="font-display text-xl font-semibold">{FOUNDER.name}</p>
-                  <p className="text-sm text-muted-foreground">{FOUNDER.role}</p>
+                  <p className="font-display text-xl font-semibold">{text['about.name']}</p>
+                  <p className="text-sm text-muted-foreground">{text['about.role']}</p>
                 </div>
               </div>
             </TiltCard>
@@ -61,8 +69,8 @@ export default function AboutPage() {
         <Reveal>
           <h2 id="story-title" className="font-display text-3xl font-bold tracking-tight">Why ClassPilot</h2>
           <div className="mt-6 flex flex-col gap-5 text-lg leading-relaxed text-muted-foreground">
-            {FOUNDER.story.map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
+            {story.map((paragraph) => (
+              <p key={paragraph}><RichText text={paragraph} /></p>
             ))}
           </div>
         </Reveal>
@@ -73,13 +81,13 @@ export default function AboutPage() {
           <h2 id="principles-title" className="font-display text-3xl font-bold tracking-tight">What I care about</h2>
         </Reveal>
         <div className="mt-8 grid gap-6 md:grid-cols-3">
-          {FOUNDER.principles.map((item, index) => (
-            <Reveal key={item.title} delay={index * 100}>
+          {principles.map((item, index) => (
+            <Reveal key={index} delay={index * 100}>
               <TiltCard className="h-full rounded-2xl">
                 <div className="glass h-full rounded-2xl p-6">
                   <p className="font-display text-sm font-semibold text-neon">{String(index + 1).padStart(2, '0')}</p>
                   <h3 className="mt-3 font-display text-xl font-semibold">{item.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.text}</p>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground"><RichText text={item.text} /></p>
                 </div>
               </TiltCard>
             </Reveal>
