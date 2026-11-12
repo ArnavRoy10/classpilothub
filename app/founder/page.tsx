@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { Activity, ArrowRight, Building2, CreditCard, Users } from 'lucide-react'
+import { Activity, ArrowRight, Building2, CreditCard, Palette, Users } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { FounderPhoto } from '@/components/founder/founder-photo'
 import { requireFounderAdmin, writeFounderAudit } from '@/lib/founder-admin'
@@ -52,6 +52,14 @@ export default async function FounderAdminPage() {
           <p className="max-w-2xl text-sm leading-6 text-muted-foreground">Open any organization to edit it, change its plan and limits, give free days, make it free, or manage its members. Every change is written to the audit log.</p>
         </div>
       </header>
+
+      <Link href="/founder/site" className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-primary/30 bg-primary/10 p-5 transition-colors hover:bg-primary/15">
+        <div className="flex items-center gap-3">
+          <span className="grid size-10 place-items-center rounded-lg bg-primary/20 text-primary"><Palette className="size-5" /></span>
+          <div><p className="font-medium">Edit your website</p><p className="text-sm text-muted-foreground">Change colours, headlines, paragraphs, buttons and your contact email, with a live preview.</p></div>
+        </div>
+        <span className="inline-flex items-center gap-2 text-sm font-medium text-primary">Open the editor <ArrowRight className="size-4" /></span>
+      </Link>
 
       <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4" aria-label="Founder metrics">
         <MetricCard icon={<Building2 className="size-4" />} label="Organizations" value={organizations?.length ?? 0} />
