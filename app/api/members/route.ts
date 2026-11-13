@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getAdminClient } from '@/lib/supabase/admin'
 import { organizationSuspendedResponse } from '@/lib/billing-gate'
 import { cleanPermissions, type MemberType } from '@/lib/permissions'
+import { linkStudentToBatch, resolveBatch, type ResolvedBatch } from '@/lib/batch-assign'
 
 // Owner / admin only: create, inspect, update and remove teacher and student logins.
 // Everything here runs on the server with the service-role client, after checking who is asking.
@@ -90,6 +91,16 @@ export async function POST(request: Request) {
   const { count } = await admin.from(kind === 'teacher' ? 'teachers' : 'students').select('id', { count: 'exact', head: true }).eq('organization_id', caller.organizationId)
   if (typeof limit === 'number' && (count ?? 0) >= limit) return fail(`Your plan's ${kind} seat limit has been reached. Upgrade your plan to add more.`, 403)
 
+  // The batch a student joins: an existing one, or a new one typed in the form (created here).
+  let batch: ResolvedBatch | null = null
+  if (kind === 'student') {
+    try {
+      batch = await resolveBatch(admin, caller.organizationId, { batchId: String(body.batchId ?? ''), newBatchName: String(body.newBatchName ?? '') })
+    } catch (error) {
+      return fail(error instanceof Error ? error.message : 'Could not use that batch.', 400)
+    }
+  }
+
   // 1. the login
   const { data: created, error: createError } = await admin.auth.admin.createUser({
     email,
@@ -114,7 +125,7 @@ export async function POST(request: Request) {
     ? { organization_id: caller.organizationId, full_name: fullName, email, phone: String(body.phone ?? '').trim() || null, subject, status: 'active' }
     : {
         organization_id: caller.organizationId, full_name: fullName, student_code: studentCode,
-        batch: String(body.batch ?? '').trim() || null,
+        batch: batch?.name ?? null,
         guardian_name: String(body.guardianName ?? '').trim() || null,
         guardian_phone: String(body.guardianPhone ?? '').trim() || null,
       }
@@ -141,7 +152,10 @@ export async function POST(request: Request) {
     return fail('Unable to set up the account. Have you run docs/member-access.sql in Supabase?', 500)
   }
 
-  return NextResponse.json({ id: record.id, userId })
+  // 4. put the student in the batch so they show up on the Batches page
+  const warning = kind === 'student' && batch ? await linkStudentToBatch(admin, record.id, batch) : null
+
+  return NextResponse.json({ id: record.id, userId, batch: batch?.name ?? null, createdBatch: batch?.created ?? false, warning })
 }
 
 // PATCH -> change admin powers, permissions, name or password of an existing login
