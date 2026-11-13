@@ -20,23 +20,29 @@ export async function resolveBatch(admin: Admin, organizationId: string, choice:
     const { data: existing } = await admin.from('batches').select('id, name').eq('organization_id', organizationId).ilike('name', escaped).limit(1).maybeSingle()
     if (existing) return { id: existing.id as string, name: existing.name as string, created: false }
 
-    const { data, error } = await admin
+    let result = await admin
       .from('batches')
       .insert({ organization_id: organizationId, name: newName, level: 'General', capacity: 30, schedule: 'To be scheduled' })
       .select('id, name')
       .single()
-    if (error || !data) throw new Error(`Could not create the batch: ${error?.message ?? 'unknown error'}`)
-    return { id: data.id as string, name: data.name as string, created: true }
+
+    // The table may not have the optional columns yet (level, capacity, schedule): create it with just the name.
+    if (result.error && /column|schema cache/i.test(result.error.message)) {
+      result = await admin.from('batches').insert({ organization_id: organizationId, name: newName }).select('id, name').single()
+    }
+
+    if (result.error || !result.data) throw new Error(`Could not create the batch: ${result.error?.message ?? 'unknown error'}`)
+    return { id: result.data.id as string, name: result.data.name as string, created: true }
   }
 
   if (!batchId) return null
 
-  const { data: batch } = await admin.from('batches').select('id, name, capacity').eq('id', batchId).eq('organization_id', organizationId).maybeSingle()
+  const { data: batch } = await admin.from('batches').select('*').eq('id', batchId).eq('organization_id', organizationId).maybeSingle()
   if (!batch) throw new Error('That batch no longer exists. Refresh the page and choose again.')
 
   const { data: links } = await admin.from('batch_students').select('student_id').eq('batch_id', batch.id)
   const taken = (links ?? []).filter((link) => link.student_id !== ignoreStudentId).length
-  const capacity = Number(batch.capacity)
+  const capacity = Number((batch as Record<string, unknown>).capacity)
   if (Number.isFinite(capacity) && capacity > 0 && taken >= capacity) throw new Error(`"${batch.name}" is full (${capacity} students). Choose another batch or raise its capacity.`)
 
   return { id: batch.id as string, name: batch.name as string, created: false }
