@@ -85,13 +85,25 @@ export default function BatchesPage() {
     if (form.name.trim().length < 2 || form.level.trim().length < 2 || form.schedule.trim().length < 2 || !Number.isInteger(capacity) || capacity < 1) { toast.error('Enter valid batch details'); setSaving(false); return }
     const payload = { name: form.name.trim(), level: form.level.trim(), capacity, teacher_id: form.teacher_id || null, schedule: form.schedule.trim() }
     const organization = editingId ? null : await supabase.rpc('current_user_organization_id')
-    if (!editingId && (organization.error || !organization.data)) { toast.error('Unable to identify your organization'); setSaving(false); return }
+    if (!editingId && (organization.error || !organization.data)) {
+      console.error('[batches] could not identify organization', organization.error)
+      toast.error(`Unable to identify your organization${organization.error ? `: ${organization.error.message}` : ''}`)
+      setSaving(false)
+      return
+    }
     const result = editingId ? await supabase.from('batches').update(payload).eq('id', editingId) : await supabase.from('batches').insert({ ...payload, organization_id: organization.data })
-    if (result.error) toast.error('Unable to save batch')
-    else { toast.success(editingId ? 'Batch updated' : 'Batch added'); setOpen(false); setForm(emptyForm); await loadData() }
+    if (result.error) {
+      console.error('[batches] save failed', result.error)
+      toast.error(`Unable to save batch: ${result.error.message}`)
+    } else { toast.success(editingId ? 'Batch updated' : 'Batch added'); setOpen(false); setForm(emptyForm); await loadData() }
     setSaving(false)
   }
-  async function removeBatch(id: string) { if (!window.confirm('Remove this batch and its student assignments?')) return; const { error } = await supabase.from('batches').delete().eq('id', id); if (error) toast.error('Unable to remove batch'); else { toast.success('Batch removed'); await loadData() } }
+  async function removeBatch(id: string) {
+    if (!window.confirm('Remove this batch and its student assignments?')) return
+    const { error } = await supabase.from('batches').delete().eq('id', id)
+    if (error) { console.error('[batches] remove failed', error); toast.error(`Unable to remove batch: ${error.message}`) }
+    else { toast.success('Batch removed'); await loadData() }
+  }
   function openAssignments(batch: Batch) { setAssigningId(batch.id); setSelectedStudents(batch.student_ids); }
   function toggleStudent(id: string) { setSelectedStudents((current) => current.includes(id) ? current.filter((studentId) => studentId !== id) : [...current, id]) }
   async function saveAssignments() {
@@ -101,7 +113,10 @@ export default function BatchesPage() {
     setAssigning(true)
     const { error: deleteError } = await supabase.from('batch_students').delete().eq('batch_id', assigningId)
     const { error: insertError } = selectedStudents.length ? await supabase.from('batch_students').insert(selectedStudents.map((student_id) => ({ batch_id: assigningId, student_id }))) : { error: null }
-    if (deleteError || insertError) toast.error('Unable to update student assignments')
+    if (deleteError || insertError) {
+      console.error('[batches] assignment failed', deleteError ?? insertError)
+      toast.error(`Unable to update student assignments: ${(deleteError ?? insertError)?.message ?? 'unknown error'}`)
+    }
     else { toast.success('Student assignments updated'); setAssigningId(null); await loadData() }
     setAssigning(false)
   }
