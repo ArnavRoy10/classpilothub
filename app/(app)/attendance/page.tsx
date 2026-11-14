@@ -48,7 +48,8 @@ export default function AttendancePage() {
       supabase.from('students').select('id, full_name, student_code').order('full_name'),
       supabase.from('batch_students').select('batch_id, student_id'),
     ])
-    if (batchesResult.error || studentsResult.error || membershipsResult.error) toast.error('Unable to load attendance data')
+    const loadError = batchesResult.error ?? studentsResult.error ?? membershipsResult.error
+    if (loadError) { console.error('[attendance] could not load', loadError); toast.error(`Unable to load attendance data: ${loadError.message}`) }
     const nextBatches = (batchesResult.data ?? []) as Batch[]
     setBatches(nextBatches)
     setStudents((studentsResult.data ?? []) as Student[])
@@ -60,7 +61,7 @@ export default function AttendancePage() {
   async function loadAttendance(nextBatchId = batchId, nextDate = date) {
     if (!nextBatchId || !nextDate) return
     const { data, error } = await supabase.from('attendance').select('id, batch_id, student_id, status').eq('batch_id', nextBatchId).eq('date', nextDate)
-    if (error) { toast.error('Unable to load attendance'); return }
+    if (error) { console.error('[attendance] could not load rows', error); toast.error(`Unable to load attendance: ${error.message}`); return }
     setAttendance(Object.fromEntries(((data ?? []) as AttendanceRow[]).map((row) => [row.student_id, row.status])))
   }
 
@@ -75,9 +76,31 @@ export default function AttendancePage() {
     const { data: userData } = await supabase.auth.getUser()
     const { data: organizationId, error: organizationError } = await supabase.rpc('current_user_organization_id')
     if (organizationError || !organizationId || !userData.user) { toast.error('Unable to identify your organization'); setSaving(false); return }
-    const rows = selectedStudents.map((student) => ({ organization_id: organizationId, batch_id: batchId, student_id: student.id, date, status: attendance[student.id] ?? 'present', marked_by: userData.user.id }))
-    const { error } = await supabase.from('attendance').upsert(rows, { onConflict: 'organization_id,batch_id,student_id,date' })
-    if (error) toast.error('Unable to save attendance')
+    const buildRows = (withMarkedBy: boolean) => selectedStudents.map((student) => ({
+      organization_id: organizationId, batch_id: batchId, student_id: student.id, date, status: attendance[student.id] ?? 'present',
+      ...(withMarkedBy ? { marked_by: userData.user.id } : {}),
+    }))
+
+    let withMarkedBy = true
+    let { error } = await supabase.from('attendance').upsert(buildRows(withMarkedBy), { onConflict: 'organization_id,batch_id,student_id,date' })
+
+    // The table has no "marked_by" column: save without it.
+    if (error && /marked_by/i.test(error.message)) {
+      withMarkedBy = false
+      ;({ error } = await supabase.from('attendance').upsert(buildRows(withMarkedBy), { onConflict: 'organization_id,batch_id,student_id,date' }))
+    }
+
+    // The table has no unique rule for batch + student + date: replace that day's rows instead.
+    if (error && /on conflict|unique or exclusion/i.test(error.message)) {
+      const removal = await supabase.from('attendance').delete().eq('organization_id', organizationId).eq('batch_id', batchId).eq('date', date)
+      if (removal.error) error = removal.error
+      else ({ error } = await supabase.from('attendance').insert(buildRows(withMarkedBy)))
+    }
+
+    if (error) {
+      console.error('[attendance] save failed', error)
+      toast.error(`Unable to save attendance: ${error.message}`)
+    }
     else { toast.success('Attendance saved'); void trackProductEvent(supabase, 'attendance_recorded', { eventKey: `attendance:${batchId}:${date}`, metadata: { batch_size: selectedStudents.length } }); await loadAttendance() }
     setSaving(false)
   }
