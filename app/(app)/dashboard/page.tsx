@@ -11,6 +11,7 @@ import { ActivationFeedback } from '@/components/app/activation-feedback'
 import { GreetingCard } from '@/components/app/greeting-card'
 import { WeekStrip } from '@/components/app/week-strip'
 import { AiAssistant } from '@/components/app/ai-assistant'
+import { TeacherDashboard } from '@/components/app/teacher-dashboard'
 import { hasPermission } from '@/lib/permissions'
 import { getUserContext } from '@/lib/supabase/user-context'
 import { createClient } from '@/lib/supabase/server'
@@ -23,6 +24,10 @@ const WEEKDAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
 export default async function DashboardPage() {
   const userContext = await getUserContext()
+
+  // Teachers get their own dashboard (their batches, classes and tasks). Owners and admins keep this one.
+  if (userContext?.role === 'teacher') return <TeacherDashboard context={userContext} />
+
   const supabase = await createClient()
   const organizationId = userContext?.organization.id
 
