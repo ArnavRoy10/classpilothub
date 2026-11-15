@@ -11,6 +11,7 @@ export async function SiteFooter() {
       title: 'Product',
       links: [
         { label: 'Features', href: '/features' },
+        { label: 'Find a tutor', href: '/tutors' },
         { label: 'Pricing', href: '/pricing' },
         { label: 'How it works', href: '/#how-it-works' },
         { label: 'FAQ', href: '/#faq' },
