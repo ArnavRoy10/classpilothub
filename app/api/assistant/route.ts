@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { getUserContext } from '@/lib/supabase/user-context'
 import { hasPermission, STAFF_SECTIONS } from '@/lib/permissions'
+import { generate, type GeminiAttempt, type GeminiMessage } from '@/lib/gemini'
 
 export const maxDuration = 60
 
@@ -18,19 +19,8 @@ function limited(userId: string) {
   return false
 }
 
-type ChatMessage = { role: 'user' | 'assistant'; content: string }
-
-type GeminiResponse = {
-  candidates?: { content?: { parts?: { text?: string }[] }; finishReason?: string }[]
-  promptFeedback?: { blockReason?: string }
-}
-
-// Models that "think" before answering can be slow. Where the model is known, ask it to think as little as possible.
-function thinkingConfigFor(model: string) {
-  if (/gemini-2\.5-flash/.test(model)) return { thinkingBudget: 0 }
-  if (/gemini-3/.test(model)) return { thinkingLevel: 'low' }
-  return null
-}
+// The model that last answered, so the next question goes straight to it.
+let preferredModel: string | null = null
 
 export async function POST(request: Request) {
   const context = await getUserContext()
@@ -42,8 +32,8 @@ export async function POST(request: Request) {
   if (limited(context.userId)) return NextResponse.json({ error: 'You have asked a lot of questions. Please try again in a while.' }, { status: 429 })
 
   const body = (await request.json().catch(() => null)) as { messages?: unknown } | null
-  const messages: ChatMessage[] = (Array.isArray(body?.messages) ? body.messages : [])
-    .filter((item): item is ChatMessage => Boolean(item) && typeof item === 'object' && ['user', 'assistant'].includes((item as ChatMessage).role) && typeof (item as ChatMessage).content === 'string')
+  const messages: GeminiMessage[] = (Array.isArray(body?.messages) ? body.messages : [])
+    .filter((item): item is GeminiMessage => Boolean(item) && typeof item === 'object' && ['user', 'assistant'].includes((item as GeminiMessage).role) && typeof (item as GeminiMessage).content === 'string')
     .map((item) => ({ role: item.role, content: item.content.trim().slice(0, 1500) }))
     .filter((item) => item.content.length > 0)
     .slice(-10)
@@ -108,64 +98,26 @@ export async function POST(request: Request) {
     ...(lines.length ? lines : ['(nothing available for this person\'s permissions)']),
   ].join('\n')
 
-  const model = process.env.GEMINI_MODEL || 'gemini-flash-latest'
-  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`
-  const thinking = thinkingConfigFor(model)
+  // Try up to three fast models, each for a short time, so one slow or missing model never blocks the chat.
+  const candidates = [...new Set([preferredModel, process.env.GEMINI_MODEL, 'gemini-flash-lite-latest', 'gemini-2.5-flash-lite', 'gemini-flash-latest'].filter((name): name is string => Boolean(name)))].slice(0, 3)
+  const attempts: GeminiAttempt[] = []
 
-  const controller = new AbortController()
-  const timer = setTimeout(() => controller.abort(), 50_000)
-
-  const callGemini = (useThinking: boolean) =>
-    fetch(endpoint, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json', 'x-goog-api-key': apiKey },
-      body: JSON.stringify({
-        systemInstruction: { parts: [{ text: system }] },
-        contents: messages.map((message) => ({ role: message.role === 'assistant' ? 'model' : 'user', parts: [{ text: message.content }] })),
-        generationConfig: { maxOutputTokens: 1024, temperature: 0.4, ...(useThinking && thinking ? { thinkingConfig: thinking } : {}) },
-      }),
-      signal: controller.signal,
-    })
-
-  try {
-    let response = await callGemini(true)
-    if (response.status === 400 && thinking) {
-      // The model did not accept the "think less" setting: try again without it.
-      const detail = await response.clone().text().catch(() => '')
-      if (/think/i.test(detail)) response = await callGemini(false)
+  for (const model of candidates) {
+    const attempt = await generate({ apiKey, model, system, messages, timeoutMs: 17_000, maxOutputTokens: 800 })
+    if (attempt.ok && attempt.text) {
+      preferredModel = model
+      return NextResponse.json({ reply: attempt.text })
     }
-
-    if (!response.ok) {
-      const detail = (await response.text().catch(() => '')).slice(0, 400)
-      console.error('[assistant] Gemini API error', response.status, detail)
-      let reason = ''
-      try { reason = (JSON.parse(detail) as { error?: { message?: string } }).error?.message ?? '' } catch { /* not JSON */ }
-      const message =
-        response.status === 429 ? 'The AI is busy right now (usage limit reached). Please try again in a minute.'
-        : response.status === 404 ? `The AI model "${model}" was not found. Set GEMINI_MODEL to a model from Google AI Studio.`
-        : response.status === 400 && /api key/i.test(detail) ? 'The AI key is not valid. Check GEMINI_API_KEY.'
-        : response.status === 401 || response.status === 403 ? 'The AI key was rejected. Check GEMINI_API_KEY and that the Gemini API is enabled for it.'
-        : `The assistant could not answer (Google error ${response.status}${reason ? `: ${reason.slice(0, 160)}` : ''}).`
-      return NextResponse.json({ error: message }, { status: 502 })
-    }
-
-    const data = (await response.json()) as GeminiResponse
-    const reply = (data.candidates?.[0]?.content?.parts ?? []).map((part) => part.text ?? '').join('').trim()
-    if (!reply) {
-      const blocked = data.promptFeedback?.blockReason || data.candidates?.[0]?.finishReason === 'SAFETY'
-      const reason = data.candidates?.[0]?.finishReason
-      return NextResponse.json({ error: blocked ? 'The assistant could not answer that. Try rephrasing your question.' : `The assistant returned an empty answer${reason ? ` (${reason})` : ''}. Please try again.` }, { status: 502 })
-    }
-    return NextResponse.json({ reply })
-  } catch (error) {
-    const timedOut = error instanceof Error && error.name === 'AbortError'
-    console.error('[assistant] request failed', timedOut ? 'timeout after 50s' : error)
-    return NextResponse.json({
-      error: timedOut
-        ? 'The assistant took too long. Try again, or set GEMINI_MODEL to a faster model (for example a "flash-lite" model).'
-        : `The assistant could not reach Google Gemini: ${error instanceof Error ? error.message : 'unknown error'}`,
-    }, { status: 504 })
-  } finally {
-    clearTimeout(timer)
+    attempts.push(attempt)
+    console.error('[assistant] model failed', model, attempt.status ?? '', attempt.error)
+    if (attempt.status === 401 || attempt.status === 403) break // the key itself is the problem: other models will not help
   }
+
+  const keyProblem = attempts.some((attempt) => attempt.status === 401 || attempt.status === 403 || (attempt.status === 400 && /api key/i.test(attempt.error ?? '')))
+  const busy = attempts.every((attempt) => attempt.status === 429)
+  const detail = attempts.map((attempt) => `${attempt.model}: ${attempt.error ?? 'failed'}`).join(' | ')
+  const message = keyProblem ? 'The AI key was rejected. Check GEMINI_API_KEY, and that the Gemini API is allowed for that key.'
+    : busy ? 'The AI is busy right now (usage limit reached). Please try again in a minute.'
+    : `The assistant could not get an answer from Google. ${detail}`
+  return NextResponse.json({ error: message.slice(0, 400) }, { status: 502 })
 }
