@@ -28,6 +28,7 @@ export const STAFF_SECTIONS: SectionDef[] = [
   { key: 'announcements', label: 'Announcements', href: '/announcements', description: 'Post notices' },
   { key: 'communications', label: 'Communications', href: '/communications', description: 'Send messages' },
   { key: 'reports', label: 'Reports', href: '/reports', description: 'Financial and academic reports' },
+  { key: 'listing', label: 'Public profile', href: '/listing', description: 'Edit the public tutor listing and read enquiries' },
 ]
 
 // Pages of the student portal (/portal ...) a student can be given.
@@ -46,7 +47,7 @@ export const STUDENT_ACTIONS: SectionDef[] = [
 
 export const DEFAULT_TEACHER_PERMISSIONS: Permissions = {
   students: true, teachers: false, batches: true, attendance: true, tests: true, results: true,
-  timetable: true, fees: false, announcements: true, communications: false, reports: false,
+  timetable: true, fees: false, announcements: true, communications: false, reports: false, listing: false,
 }
 
 export const DEFAULT_STUDENT_PERMISSIONS: Permissions = {
