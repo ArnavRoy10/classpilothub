@@ -15,6 +15,7 @@ import { Logo } from '@/components/brand/logo'
 
 const links = [
   { label: 'Features', href: '/features' },
+  { label: 'Find tutors', href: '/tutors' },
   { label: 'Pricing', href: '/pricing' },
   { label: 'How it works', href: '/#how-it-works' },
   { label: 'FAQ', href: '/#faq' },
