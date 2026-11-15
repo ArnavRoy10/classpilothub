@@ -13,6 +13,7 @@ import {
   LifeBuoy,
   FileBarChart,
   Settings,
+  Store,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -116,6 +117,12 @@ export const appNav: NavGroup[] = [
         href: '/communications',
         icon: MessageCircle,
         description: 'Send targeted messages to your community.',
+      },
+      {
+        title: 'Public profile',
+        href: '/listing',
+        icon: Store,
+        description: 'Get found by students and manage your availability.',
       },
       {
         title: 'Support',
