@@ -1,5 +1,5 @@
-import Image from 'next/image'
 import Link from 'next/link'
+import { HeroPreview } from '@/components/marketing/hero-preview'
 import { ArrowRight, Check, MoveUpRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { RichText } from '@/components/site/rich-text'
@@ -47,29 +47,7 @@ export async function Hero() {
         </div>
 
         <div className="relative min-w-0 pt-4 sm:pt-8 lg:pt-0">
-          <div className="absolute -top-1 right-1 z-10 flex size-16 -rotate-6 flex-col items-center justify-center bg-accent text-center text-[10px] leading-tight font-bold uppercase tracking-wide text-foreground sm:right-6 sm:size-20 sm:text-xs">
-            Made for
-            <br />
-            class days
-          </div>
-          <div className="overflow-hidden border border-foreground bg-card p-2 shadow-[8px_8px_0_var(--foreground)] sm:p-3 sm:shadow-[14px_14px_0_var(--foreground)]">
-            <Image
-              src="/hero-dashboard.png"
-              alt="ClassPilot workspace preview showing student, attendance and fee information"
-              width={1600}
-              height={1000}
-              priority
-              sizes="(min-width: 1024px) 55vw, 100vw"
-              className="h-auto w-full border border-border object-cover"
-            />
-            <div className="flex items-center justify-between gap-3 px-2 py-3 sm:px-3">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.12em] text-foreground">Your whole centre, in rhythm</p>
-                <p className="mt-1 text-xs text-muted-foreground">One clear view of the work that matters.</p>
-              </div>
-              <span className="shrink-0 border border-border px-2 py-1 font-mono text-[10px] text-muted-foreground">01 / 04</span>
-            </div>
-          </div>
+          <HeroPreview />
         </div>
       </div>
     </section>
