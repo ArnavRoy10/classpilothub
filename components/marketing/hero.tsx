@@ -1,13 +1,7 @@
-import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowRight, CheckCircle2, Sparkles } from 'lucide-react'
+import Link from 'next/link'
+import { ArrowRight, Check, MoveUpRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Magnetic } from '@/components/fx/magnetic'
-import { ParticleField } from '@/components/fx/particle-field'
-import { HeroScene } from '@/components/fx/hero-scene'
-import { TiltCard } from '@/components/fx/tilt-card'
-import { Reveal } from '@/components/fx/reveal'
-import { WordReveal } from '@/components/fx/word-reveal'
 import { RichText } from '@/components/site/rich-text'
 import { getSiteContent } from '@/lib/site-content'
 
@@ -16,68 +10,67 @@ export async function Hero() {
   const highlights = [text['home.hero.h1'], text['home.hero.h2'], text['home.hero.h3']].filter(Boolean)
 
   return (
-    <section className="relative isolate -mt-[68px] overflow-hidden pt-[68px]">
-      <div aria-hidden="true" className="aurora absolute inset-0 -z-20" />
-      <div aria-hidden="true" className="grid-bg absolute inset-x-0 top-0 -z-10 h-[680px]" />
-      <ParticleField className="-z-10" />
-
-      <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 pt-14 pb-10 sm:px-6 sm:pt-20 lg:grid-cols-[1.05fr_0.95fr]">
-        <div className="flex flex-col items-start">
-          <span className="glass mb-6 inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-medium text-muted-foreground">
-            <Sparkles className="size-3.5 text-neon" aria-hidden="true" />
+    <section className="relative overflow-hidden border-b border-border bg-background">
+      <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-12 sm:px-6 sm:py-16 lg:grid-cols-[0.94fr_1.06fr] lg:gap-12 lg:px-10 lg:py-20">
+        <div className="relative z-10 flex flex-col items-start">
+          <div className="mb-6 inline-flex items-center gap-2 border border-foreground bg-accent px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-foreground">
+            <span className="size-2 rounded-full bg-foreground" />
             {text['home.hero.badge']}
-          </span>
-          <h1 className="font-display text-5xl leading-[1.04] font-bold tracking-tight text-balance text-foreground sm:text-6xl lg:text-7xl">
-            <WordReveal text={text['home.hero.line1']} />
-            <span className="block pb-1">
-              <WordReveal text={text['home.hero.line2']} delay={350} wordClassName="text-gradient" />
-            </span>
+          </div>
+          <h1 className="max-w-3xl font-display text-[clamp(3.2rem,10vw,6.6rem)] leading-[0.96] font-semibold tracking-[-0.075em] text-foreground">
+            <span className="block">{text['home.hero.line1']}</span>
+            <span className="inline-block bg-accent px-1">{text['home.hero.line2']}</span>
           </h1>
-          <p className="mt-6 max-w-xl text-lg leading-relaxed text-pretty text-muted-foreground">
+          <p className="mt-6 max-w-xl text-base leading-7 text-muted-foreground sm:text-lg">
             <RichText text={text['home.hero.body']} />
           </p>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Magnetic>
-              <Button size="lg" className="shadow-[0_0_40px_-6px] shadow-primary/70" render={<Link href="/signup" />}>
-                {text['home.hero.cta1']}
-                <ArrowRight data-icon="inline-end" />
-              </Button>
-            </Magnetic>
-            <Magnetic>
-              <Button size="lg" variant="outline" className="glass border-white/15 bg-transparent" render={<a href={`mailto:${text['site.contactEmail']}?subject=ClassPilot%20demo`} />}>
-                {text['home.hero.cta2']}
-              </Button>
-            </Magnetic>
+          <div className="mt-7 flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+            <Button size="lg" className="h-12 w-full justify-between rounded-md px-5 sm:w-auto" render={<Link href="/signup" />}>
+              {text['home.hero.cta1']}
+              <ArrowRight data-icon="inline-end" />
+            </Button>
+            <Button size="lg" variant="outline" className="h-12 w-full rounded-md border-foreground px-5 sm:w-auto" render={<a href={`mailto:${text['site.contactEmail']}?subject=ClassPilot%20demo`} />}>
+              {text['home.hero.cta2']}
+              <MoveUpRight data-icon="inline-end" />
+            </Button>
           </div>
-          <ul className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-2">
-            {highlights.map((item) => (
-              <li key={item} className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                <CheckCircle2 className="size-4 text-neon" />
-                {item}
-              </li>
-            ))}
-          </ul>
+          {highlights.length > 0 && (
+            <ul className="mt-7 flex flex-wrap gap-x-5 gap-y-2 border-t border-border pt-4">
+              {highlights.map((item) => (
+                <li key={item} className="flex items-center gap-2 text-xs font-medium text-muted-foreground sm:text-sm">
+                  <Check aria-hidden="true" className="size-4 text-foreground" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
 
-        <HeroScene />
-      </div>
-
-      <div className="mx-auto max-w-5xl px-4 pb-16 sm:px-6" style={{ perspective: '1600px' }}>
-        <Reveal>
-          <TiltCard max={4} className="rounded-2xl">
-            <div className="glass overflow-hidden rounded-2xl p-2 shadow-[0_40px_120px_-30px] shadow-violet-glow/60" style={{ transform: 'rotateX(6deg)' }}>
-              <Image
-                src="/hero-dashboard.png"
-                alt="ClassPilot dashboard showing student, attendance and fee metrics"
-                width={1600}
-                height={1000}
-                priority
-                sizes="(min-width: 1024px) 1024px, 100vw"
-                className="h-auto w-full rounded-xl"
-              />
+        <div className="relative min-w-0 pt-4 sm:pt-8 lg:pt-0">
+          <div className="absolute -top-1 right-1 z-10 flex size-16 -rotate-6 flex-col items-center justify-center bg-accent text-center text-[10px] leading-tight font-bold uppercase tracking-wide text-foreground sm:right-6 sm:size-20 sm:text-xs">
+            Made for
+            <br />
+            class days
+          </div>
+          <div className="overflow-hidden border border-foreground bg-card p-2 shadow-[8px_8px_0_var(--foreground)] sm:p-3 sm:shadow-[14px_14px_0_var(--foreground)]">
+            <Image
+              src="/hero-dashboard.png"
+              alt="ClassPilot workspace preview showing student, attendance and fee information"
+              width={1600}
+              height={1000}
+              priority
+              sizes="(min-width: 1024px) 55vw, 100vw"
+              className="h-auto w-full border border-border object-cover"
+            />
+            <div className="flex items-center justify-between gap-3 px-2 py-3 sm:px-3">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.12em] text-foreground">Your whole centre, in rhythm</p>
+                <p className="mt-1 text-xs text-muted-foreground">One clear view of the work that matters.</p>
+              </div>
+              <span className="shrink-0 border border-border px-2 py-1 font-mono text-[10px] text-muted-foreground">01 / 04</span>
             </div>
-          </TiltCard>
-        </Reveal>
+          </div>
+        </div>
       </div>
     </section>
   )

@@ -8,7 +8,6 @@ import { Cta } from '@/components/marketing/cta'
 import { Audiences } from '@/components/marketing/audiences'
 import { Marquee } from '@/components/marketing/marquee'
 import { DayStory } from '@/components/marketing/day-story'
-import { ScrollSky } from '@/components/fx/scroll-sky'
 
 // Re-checks your saved edits at most once a minute, so the page stays fast.
 export const revalidate = 60
@@ -27,7 +26,6 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <div className="relative isolate">
-      <ScrollSky />
       <Hero />
       <Marquee />
       <Audiences />
