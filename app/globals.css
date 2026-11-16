@@ -63,10 +63,10 @@
    Original violet:    272 / 205 / 330 / 278
    ------------------------------------------------------------------------------------------ */
 :root {
-  --h1: 42;
-  --h2: 88;
-  --h3: 8;
-  --hb: 320;
+  --h1: 228;
+  --h2: 190;
+  --h3: 270;
+  --hb: 238;
 }
 
 @keyframes float {
@@ -144,39 +144,39 @@
 }
 
 :root {
-  color-scheme: light;
-  --background: oklch(0.985 0.01 85);
-  --foreground: oklch(0.22 0.03 var(--hb));
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.22 0.03 var(--hb));
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.22 0.03 var(--hb));
-  --primary: oklch(0.6 0.17 var(--h1));
-  --primary-foreground: oklch(0.99 0.005 85);
-  --secondary: oklch(0.96 0.015 85);
-  --secondary-foreground: oklch(0.3 0.03 var(--hb));
-  --muted: oklch(0.96 0.015 85);
-  --muted-foreground: oklch(0.52 0.03 var(--hb));
-  --accent: oklch(0.95 0.03 var(--h2));
-  --accent-foreground: oklch(0.35 0.08 var(--h1));
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.91 0.015 85);
-  --input: oklch(0.91 0.015 85);
-  --ring: oklch(0.6 0.17 var(--h1));
-  --chart-1: oklch(0.6 0.17 var(--h1));
-  --chart-2: oklch(0.72 0.14 var(--h2));
-  --chart-3: oklch(0.62 0.18 var(--h3));
-  --chart-4: oklch(0.7 0.13 165);
-  --chart-5: oklch(0.6 0.16 265);
-  --radius: 0.7rem;
-  --sidebar: oklch(0.99 0.008 85);
-  --sidebar-foreground: oklch(0.3 0.03 var(--hb));
-  --sidebar-primary: oklch(0.6 0.17 var(--h1));
-  --sidebar-primary-foreground: oklch(0.99 0.005 85);
-  --sidebar-accent: oklch(0.955 0.02 85);
-  --sidebar-accent-foreground: oklch(0.35 0.05 var(--h1));
-  --sidebar-border: oklch(0.91 0.015 85);
-  --sidebar-ring: oklch(0.6 0.17 var(--h1));
+  color-scheme: dark;
+  --background: oklch(0.15 0.025 var(--hb));
+  --foreground: oklch(0.98 0.008 245);
+  --card: oklch(0.21 0.035 var(--hb));
+  --card-foreground: oklch(0.98 0.008 245);
+  --popover: oklch(0.19 0.035 var(--hb));
+  --popover-foreground: oklch(0.98 0.008 245);
+  --primary: oklch(0.69 0.18 var(--h1));
+  --primary-foreground: oklch(0.99 0.01 245);
+  --secondary: oklch(0.25 0.035 var(--hb));
+  --secondary-foreground: oklch(0.94 0.01 245);
+  --muted: oklch(0.24 0.03 var(--hb));
+  --muted-foreground: oklch(0.7 0.035 245);
+  --accent: oklch(0.29 0.055 var(--hb));
+  --accent-foreground: oklch(0.94 0.01 245);
+  --destructive: oklch(0.68 0.2 25);
+  --border: oklch(1 0 0 / 9%);
+  --input: oklch(1 0 0 / 13%);
+  --ring: oklch(0.69 0.18 var(--h1));
+  --chart-1: oklch(0.69 0.18 var(--h1));
+  --chart-2: oklch(0.78 0.14 var(--h2));
+  --chart-3: oklch(0.68 0.18 var(--h3));
+  --chart-4: oklch(0.72 0.14 165);
+  --chart-5: oklch(0.68 0.14 45);
+  --radius: 0.9rem;
+  --sidebar: oklch(0.17 0.03 var(--hb));
+  --sidebar-foreground: oklch(0.92 0.015 245);
+  --sidebar-primary: oklch(0.69 0.18 var(--h1));
+  --sidebar-primary-foreground: oklch(0.99 0.01 245);
+  --sidebar-accent: oklch(0.25 0.045 var(--hb));
+  --sidebar-accent-foreground: oklch(0.96 0.01 245);
+  --sidebar-border: oklch(1 0 0 / 8%);
+  --sidebar-ring: oklch(0.69 0.18 var(--h1));
 }
 
 .dark {
@@ -255,7 +255,36 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    scroll-behavior: smooth;
+    background: oklch(0.15 0.025 var(--hb));
+  }
   body {
     @apply bg-background text-foreground;
+    min-height: 100dvh;
+    background-image:
+      radial-gradient(ellipse at 12% 0%, oklch(0.35 0.14 var(--h1) / 14%), transparent 34rem),
+      radial-gradient(ellipse at 92% 18%, oklch(0.3 0.13 var(--h3) / 10%), transparent 30rem);
+    background-attachment: fixed;
+  }
+  ::selection {
+    color: oklch(0.98 0.01 245);
+    background: oklch(0.58 0.18 var(--h1) / 60%);
+  }
+}
+
+@layer components {
+  [data-slot='card'] {
+    background-image: linear-gradient(145deg, oklch(1 0 0 / 3%), transparent 58%);
+    box-shadow: 0 16px 42px -30px oklch(0 0 0 / 75%), inset 0 1px 0 oklch(1 0 0 / 3%);
+    transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+  }
+
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    [data-slot='card']:hover {
+      border-color: oklch(0.72 0.13 var(--h1) / 35%);
+      box-shadow: 0 20px 48px -30px oklch(0.55 0.17 var(--h1) / 35%), inset 0 1px 0 oklch(1 0 0 / 5%);
+      transform: translateY(-2px);
+    }
   }
 }
