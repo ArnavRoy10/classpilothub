@@ -80,7 +80,7 @@ export default async function FounderAdminPage() {
         </div>
       </section>
 
-      <section className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
+      <section id="organizations" className="grid scroll-mt-24 gap-6 lg:grid-cols-[1.4fr_1fr]">
         <Card>
           <CardHeader><CardTitle>Recent organizations</CardTitle></CardHeader>
           <CardContent className="space-y-3">
