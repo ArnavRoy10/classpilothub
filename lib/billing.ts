@@ -69,6 +69,8 @@ export async function cancelBillingSubscription() {
   const subscriptionId = context.subscription?.stripe_subscription_id
   if (!subscriptionId) throw new Error('No active subscription found.')
 
+  if (subscriptionId.startsWith('qr:')) throw new Error('This plan was paid by QR and will not renew automatically.')
+
   if (subscriptionId.startsWith('razorpay:')) {
     const { razorpay } = await import('@/lib/razorpay')
     if (!razorpay) throw new Error('Razorpay is not configured.')
