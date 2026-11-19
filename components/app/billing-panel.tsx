@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useRazorpayCheckout } from '@/components/app/use-razorpay-checkout'
+import { PayByQrModal } from '@/components/app/pay-by-qr-dialog'
 import { formatDate, type BillingState } from '@/lib/billing-state'
 import { PLAN_ORDER, PLANS, formatINR, type PlanId } from '@/lib/plans'
 
@@ -32,6 +33,7 @@ export function BillingPanel({ organization, subscription, usage, state, canMana
   const router = useRouter()
   const { busy: checkoutBusy, checkout } = useRazorpayCheckout()
   const [busy, setBusy] = useState<string | null>(null)
+  const [qrPlan, setQrPlan] = useState<PlanId | null>(null)
   const working = busy !== null || checkoutBusy !== null
   const plan = PLANS[state.planId]
   const badge = statusBadge[state.kind]
@@ -64,6 +66,16 @@ export function BillingPanel({ organization, subscription, usage, state, canMana
     } finally {
       setBusy(null)
     }
+  }
+
+  // QR is a one-off payment for one month, so it is offered only where no autopay is already running
+  // and the plan is not still in its free trial. Mirrors the checks in /api/billing/razorpay-qr.
+  const sid = subscription?.stripe_subscription_id ?? ''
+  const autoRenewOn = state.kind === 'active' && !state.cancelAtPeriodEnd && Boolean(sid) && !sid.startsWith('qr:')
+  function canPayByQr(planId: PlanId) {
+    if (!canManage || working || state.kind === 'trial' || state.kind === 'unknown') return false
+    if (state.mustPay) return planId === state.planId
+    return state.kind === 'active' && !autoRenewOn
   }
 
   function buttonFor(planId: PlanId) {
@@ -174,11 +186,14 @@ export function BillingPanel({ organization, subscription, usage, state, canMana
                   <li className="flex gap-2"><Check className="size-4 text-primary" />Reports and notifications</li>
                 </ul>
                 <Button className="w-full" variant={action.variant} disabled={action.disabled} onClick={action.onClick}>{action.content}</Button>
+                {canPayByQr(id) && <Button className="w-full" variant="outline" onClick={() => setQrPlan(id)}>Pay {formatINR(item.monthly)} by QR</Button>}
               </CardContent>
             </Card>
           )
         })}
       </div>
+
+      {qrPlan && <PayByQrModal plan={qrPlan} onClose={() => setQrPlan(null)} />}
     </div>
   )
 }
