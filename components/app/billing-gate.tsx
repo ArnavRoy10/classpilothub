@@ -9,6 +9,7 @@ import { createClient } from '@/lib/supabase/client'
 import { formatDate, type BillingState } from '@/lib/billing-state'
 import { formatINR } from '@/lib/plans'
 import { useRazorpayCheckout } from '@/components/app/use-razorpay-checkout'
+import { PayByQrButton } from '@/components/app/pay-by-qr-dialog'
 
 function useSignOut() {
   const router = useRouter()
@@ -67,6 +68,7 @@ export function PaymentDuePopup({ state, isOwner, orgName }: { state: BillingSta
         {isOwner ? (
           <div className="flex flex-col gap-2">
             <PayButton state={state} label={`Pay ${formatINR(state.amountDue)} now`} />
+            <PayByQrButton plan={state.planId} amount={state.amountDue} />
             <Button variant="ghost" onClick={signOut}>Sign out</Button>
           </div>
         ) : (
@@ -103,7 +105,7 @@ export function SuspendedPopup({ state, isOwner, orgName }: { state: BillingStat
         </div>
         <div className="flex flex-col gap-2">
           {isOwner
-            ? <PayButton state={state} label={`Pay ${formatINR(state.amountDue)} and reactivate`} />
+            ? <><PayButton state={state} label={`Pay ${formatINR(state.amountDue)} and reactivate`} /><PayByQrButton plan={state.planId} amount={state.amountDue} /></>
             : <p className="text-sm text-muted-foreground">Please ask your organisation owner to complete the payment.</p>}
           <Button variant="outline" onClick={() => setOpen(false)}><Eye data-icon="inline-start" />View dashboard (view-only)</Button>
           <Button variant="ghost" onClick={signOut}>Sign out</Button>
