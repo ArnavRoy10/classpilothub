@@ -14,7 +14,8 @@ export async function POST(request: Request) {
     payload?: {
       subscription?: { entity?: { id?: string; notes?: { organization_id?: string; plan?: string }; status?: string; current_start?: number; current_end?: number } }
       payment_link?: { entity?: { id?: string; notes?: { student_fee_id?: string; organization_id?: string }; amount_paid?: number } }
-      payment?: { entity?: { id?: string; notes?: { student_fee_id?: string; organization_id?: string }; amount?: number } }
+      payment?: { entity?: { id?: string; status?: string; notes?: { student_fee_id?: string; organization_id?: string }; amount?: number } }
+      qr_code?: { entity?: { id?: string; notes?: { kind?: string; organization_id?: string; plan?: string } } }
     }
   }
   try {
@@ -74,6 +75,35 @@ export async function POST(request: Request) {
     if (studentFeeId) {
       await adminClient.from('student_fees').update({ status: 'paid' }).eq('id', studentFeeId)
       await adminClient.from('payments').insert({ student_fee_id: studentFeeId, amount: (paymentEntity?.amount ?? 0) / 100, method: 'razorpay_qr_code' })
+    }
+  }
+
+  // Plan payment by QR: the owner paid one month of a plan by scanning a QR code.
+  // There is no autopay behind this, so the plan runs for 30 days and then asks for renewal.
+  if (event.event === 'qr_code.credited') {
+    const qr = event.payload?.qr_code?.entity
+    const payment = event.payload?.payment?.entity
+    const notes = qr?.notes
+    const qrPlan = normalizePlan(notes?.plan)
+    if (notes?.kind === 'plan_qr' && notes.organization_id && qr?.id && qrPlan && payment?.status === 'captured' && payment.amount === PLANS[qrPlan].monthly * 100) {
+      const orgId = notes.organization_id
+      const { data: current } = await adminClient.from('subscriptions').select('status, current_period_end').eq('organization_id', orgId).maybeSingle()
+      const now = Date.now()
+      const currentEnd = current?.current_period_end ? new Date(current.current_period_end).getTime() : 0
+      // Paid early: the new month starts when the paid time runs out, so nothing is lost.
+      const startMs = ['active', 'canceled'].includes(current?.status ?? '') && currentEnd > now ? currentEnd : now
+      const endMs = startMs + 30 * 86_400_000
+      await adminClient.from('subscriptions').upsert({
+        organization_id: orgId,
+        stripe_subscription_id: `qr:${qr.id}`,
+        plan: qrPlan,
+        status: 'active',
+        cancel_at_period_end: true, // no autopay: the UI shows "will not renew, renew before it ends"
+        current_period_start: new Date(startMs).toISOString(),
+        current_period_end: new Date(endMs).toISOString(),
+        updated_at: new Date().toISOString(),
+      }, { onConflict: 'organization_id' })
+      await adminClient.from('organizations').update({ plan: qrPlan, max_students: PLANS[qrPlan].maxStudents, max_teachers: PLANS[qrPlan].maxTeachers }).eq('id', orgId)
     }
   }
 
