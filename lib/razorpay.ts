@@ -73,3 +73,26 @@ export async function createFeeQrCode(input: CreateQrCodeInput) {
     notes: { student_fee_id: input.studentFeeId, organization_id: input.organizationId },
   })
 }
+
+type CreatePlanQrInput = {
+  amount: number
+  organizationId: string
+  plan: string
+  description: string
+}
+
+// One-time UPI QR for one month of a plan. Single use, expires in 15 minutes.
+export async function createPlanQrCode(input: CreatePlanQrInput) {
+  if (!razorpay) throw new Error('Razorpay is not configured.')
+  const closeBy = Math.floor(Date.now() / 1000) + 15 * 60
+  return razorpay.qrCode.create({
+    type: 'upi_qr',
+    name: input.description.slice(0, 40),
+    usage: 'single_use',
+    fixed_amount: true,
+    payment_amount: Math.round(input.amount * 100),
+    description: input.description,
+    close_by: closeBy,
+    notes: { kind: 'plan_qr', organization_id: input.organizationId, plan: input.plan },
+  })
+}
