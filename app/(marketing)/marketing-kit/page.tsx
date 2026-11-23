@@ -71,7 +71,7 @@ export default function MarketingKitPage() {
             <Button size="lg" render={<Link href="/signup" />}>
               Try ClassPilot free <ArrowRight data-icon="inline-end" />
             </Button>
-            <Button size="lg" variant="outline" render={<a href="mailto:hello@classpilot.app?subject=ClassPilot%20demo" />}>
+            <Button size="lg" variant="outline" render={<a href="mailto:arnavbhi5@gmail.com?subject=ClassPilot%20demo" />}>
               Book a demo <Mail data-icon="inline-end" />
             </Button>
           </div>

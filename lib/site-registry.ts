@@ -54,7 +54,7 @@ export const SITE_FIELDS: FieldDef[] = [
   { page: 'About', group: 'What I care about', key: 'about.p3.text', label: 'Point 3 text', kind: 'rich', default: FOUNDER.principles[2].text },
 
   // ---------------- Footer and contact ----------------
-  { page: 'Footer & contact', group: 'Contact', key: 'site.contactEmail', label: 'Contact email', kind: 'email', default: 'hello@classpilot.app', hint: 'Used by "Book a demo", the footer Contact link and the About page.' },
+  { page: 'Footer & contact', group: 'Contact', key: 'site.contactEmail', label: 'Contact email', kind: 'email', default: 'arnavbhi5@gmail.com', hint: 'Used by "Book a demo", the footer Contact link and the About page.' },
   { page: 'Footer & contact', group: 'Footer', key: 'footer.about', label: 'Text under the logo', kind: 'text', default: 'A focused workspace for coaching centers to manage people, classes, attendance, fees, and results in one place.' },
   { page: 'Footer & contact', group: 'Footer', key: 'footer.copyright', label: 'Copyright line', kind: 'text', default: '© {year} ClassPilot. All rights reserved.', hint: '{year} becomes the current year automatically.' },
   { page: 'Footer & contact', group: 'Footer', key: 'footer.tagline', label: 'Bottom-right line', kind: 'text', default: 'Built for coaching centers everywhere.' },
