@@ -123,10 +123,11 @@
 
 @layer base {
   * { @apply border-border outline-ring/40; }
-  html { scroll-behavior: smooth; background: var(--background); }
+  html { scroll-behavior: smooth; background: var(--background); -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
   body {
     @apply bg-background text-foreground;
     min-height: 100dvh;
+    overflow-x: clip;
     background-image: radial-gradient(ellipse at 50% 0%, oklch(0.92 0.035 96 / 70%), transparent 42rem);
     background-attachment: fixed;
   }
@@ -244,6 +245,20 @@
   }
   [data-slot='card']:hover { border-color: oklch(0.68 0.12 112 / 65%); box-shadow: 0 10px 24px -18px oklch(0.3 0.04 145 / 30%); }
   [data-sidebar='sidebar'] { box-shadow: none; }
+}
+
+/* Touch screens: iOS zooms the page when a field under 16px is focused, and small targets are hard to hit. */
+@media (pointer: coarse) {
+  input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='color']):not([type='file']),
+  select,
+  textarea { font-size: 16px; }
+  input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='color']):not([type='file']),
+  select { min-height: 2.5rem; }
+}
+
+/* iOS ignores fixed background attachment and repaints on scroll; keep it for large screens only. */
+@media (max-width: 1023px) {
+  body { background-attachment: scroll; }
 }
 
 @media (max-width: 639px) {
