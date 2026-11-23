@@ -17,7 +17,7 @@ export async function Hero() {
             <span className="size-2 rounded-full bg-foreground" />
             {text['home.hero.badge']}
           </div>
-          <h1 className="max-w-3xl font-display text-[clamp(3.2rem,10vw,6.6rem)] leading-[0.96] font-semibold tracking-[-0.075em] text-foreground">
+          <h1 className="max-w-3xl font-display text-[clamp(2.5rem,10vw,6.6rem)] leading-[0.96] font-semibold tracking-[-0.075em] text-foreground">
             <span className="block">{text['home.hero.line1']}</span>
             <span className="inline-block bg-accent px-1">{text['home.hero.line2']}</span>
           </h1>
