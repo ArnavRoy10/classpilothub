@@ -27,7 +27,7 @@ export function PortalShell({ children, name, role, permissions }: { children: R
   async function signOut() { await createClient().auth.signOut(); window.location.href = '/login' }
 
   return (
-    <div className="relative isolate min-h-screen bg-background text-foreground">
+    <div className="relative isolate min-h-dvh bg-background text-foreground">
       <div aria-hidden="true" className="aurora pointer-events-none fixed inset-0 -z-10 opacity-40" />
 
       <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-3 border-b border-border bg-background/95 px-3 backdrop-blur sm:px-6">
