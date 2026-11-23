@@ -15,7 +15,7 @@ export default function PrivacyPage() {
         <section><h2 className="text-lg font-semibold text-foreground">What we collect</h2><p className="mt-2">We collect account details, organization details, and the operational records your authorized team adds to ClassPilot, such as students, teachers, attendance, fees, tests, and results.</p></section>
         <section><h2 className="text-lg font-semibold text-foreground">How we use data</h2><p className="mt-2">We use this information to provide the workspace, authenticate users, process subscriptions, send requested communications, prevent abuse, and improve reliability.</p></section>
         <section id="data"><h2 className="text-lg font-semibold text-foreground">Workspace data</h2><p className="mt-2">Organization data is scoped to the organization that owns it. Administrators are responsible for inviting appropriate users and following applicable education and privacy requirements.</p></section>
-        <section><h2 className="text-lg font-semibold text-foreground">Your choices</h2><p className="mt-2">For access, correction, export, or deletion requests, contact <a className="text-primary underline underline-offset-4" href="mailto:hello@classpilot.app">hello@classpilot.app</a>.</p></section>
+        <section><h2 className="text-lg font-semibold text-foreground">Your choices</h2><p className="mt-2">For access, correction, export, or deletion requests, contact <a className="text-primary underline underline-offset-4" href="mailto:arnavbhi5@gmail.com">arnavbhi5@gmail.com</a>.</p></section>
       </div>
     </main>
   )

@@ -6,7 +6,7 @@ export const FOUNDER = {
   role: 'Founder, ClassPilot',
   // Put your photo in the "public" folder with this exact file name.
   photo: '/founder.jpg',
-  email: 'hello@classpilot.app',
+  email: 'arnavbhi5@gmail.com',
 
   headline: 'I build tools that give teachers their time back.',
   intro:
