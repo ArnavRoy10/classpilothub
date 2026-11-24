@@ -7,14 +7,28 @@ import { Analytics } from '@vercel/analytics/next'
 import { Toaster } from '@/components/ui/sonner'
 import { PageTransition } from '@/components/fx/page-transition'
 import { getSiteContent } from '@/lib/site-content'
+import { SITE_URL, SITE_NAME } from '@/lib/site-url'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' })
 const jakarta = Plus_Jakarta_Sans({ subsets: ['latin'], variable: '--font-jakarta', display: 'swap' })
 
 export const metadata: Metadata = {
-  title: { default: 'ClassPilot', template: '%s | ClassPilot' },
+  // Without this, Next builds canonical/OG URLs from the deployment's
+  // *.vercel.app address, which is how the duplicate site got indexed.
+  metadataBase: new URL(SITE_URL),
+  title: { default: SITE_NAME, template: `%s | ${SITE_NAME}` },
   description: 'Manage students, teachers, batches, fees, attendance and results for your coaching center.',
+  applicationName: SITE_NAME,
+  openGraph: {
+    type: 'website',
+    siteName: SITE_NAME,
+    locale: 'en_IN',
+  },
+  twitter: { card: 'summary_large_image' },
+  // NOTE: do not set `alternates.canonical` here. A canonical in the root
+  // layout would apply to every page and mark them all as copies of the
+  // homepage. Set it per page instead.
 }
 
 export default async function RootLayout({
