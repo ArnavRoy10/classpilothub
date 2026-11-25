@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { Suspense, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -10,6 +10,7 @@ import { Field, FieldGroup, FieldLabel, FieldDescription } from '@/components/ui
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Info } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
+import { GoogleButton, OrDivider } from '@/components/auth/google-button'
 
 
 const coachingPlans = ['Starter', 'Growth', 'Pro'] as const
@@ -24,6 +25,10 @@ function SignupForm() {
   const [plan, setPlan] = useState(requestedPlan === 'Solo Tutor' || coachingPlans.includes(requestedPlan as (typeof coachingPlans)[number]) ? requestedPlan : 'Starter')
 
   const isSoloTutor = accountType === 'solo'
+
+  useEffect(() => {
+    if (searchParams.get('error')) toast.error('Google sign-up did not finish. Please try again.', { id: 'auth-error' })
+  }, [searchParams])
 
   function selectAccountType(nextType: AccountType) {
     setAccountType(nextType)
@@ -91,6 +96,9 @@ function SignupForm() {
         <AlertTitle>Secure account setup</AlertTitle>
         <AlertDescription>Your workspace and owner profile will be created securely after authentication.</AlertDescription>
       </Alert>
+
+      <GoogleButton mode="signup" />
+      <OrDivider label="or sign up with email" />
 
       <form onSubmit={handleSubmit}>
         <FieldGroup>
