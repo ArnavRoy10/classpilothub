@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { Suspense, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { Briefcase, GraduationCap, UserRound, type LucideIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { createClient } from '@/lib/supabase/client'
 import { memberTypeOf, type MemberType } from '@/lib/permissions'
+import { GoogleButton, OrDivider } from '@/components/auth/google-button'
 
 const options: { id: MemberType; label: string; icon: LucideIcon; hint: string }[] = [
   { id: 'student', label: 'Student', icon: GraduationCap, hint: 'See your attendance, results, timetable and announcements.' },
@@ -23,6 +24,19 @@ function LoginForm() {
   const [loading, setLoading] = useState(false)
   const [selected, setSelected] = useState<MemberType>('student')
   const current = options.find((option) => option.id === selected)!
+
+  // Shows why Google sign-in sent the person back here.
+  useEffect(() => {
+    const reason = searchParams.get('error')
+    if (!reason) return
+    const type = options.find((option) => option.id === searchParams.get('type'))
+    const messages: Record<string, string> = {
+      google_failed: 'Google sign-in did not finish. Please try again.',
+      no_account: 'No ClassPilot account uses this Google email. Owners can create one from Sign up. Students and teachers: ask your center owner to add your email.',
+      wrong_type: type ? `This is a ${type.id} account. Please choose "${type.label}" above to log in.` : 'This account belongs to a different login type.',
+    }
+    toast.error(messages[reason] ?? 'Sign-in failed. Please try again.', { id: 'auth-error' })
+  }, [searchParams])
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -113,6 +127,9 @@ function LoginForm() {
           <Button type="submit" className="w-full" disabled={loading}>{loading ? 'Signing in…' : `Log in as ${current.label}`}</Button>
         </FieldGroup>
       </form>
+
+      <OrDivider label="or" />
+      <GoogleButton mode="login" next={searchParams.get('next')} memberType={selected} />
 
       {selected === 'owner' ? (
         <p className="text-center text-sm text-muted-foreground">New to ClassPilot? <Link href="/signup" className="font-medium text-primary hover:underline">Create an owner account</Link></p>
