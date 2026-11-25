@@ -8,6 +8,8 @@ function safeNext(value: string | null) {
   return value && value.startsWith('/') && !value.startsWith('//') && !value.startsWith('/\\') ? value : null
 }
 
+type ProfileRow = { role?: string; member_type?: string | null }
+
 function founderEmails() {
   return (process.env.FOUNDER_ADMIN_EMAILS ?? '')
     .split(',')
@@ -48,13 +50,13 @@ export async function GET(request: Request) {
   const user = data.user
 
   // member_type only exists after docs/member-access.sql has been run, so fall back to role alone.
-  let profile: { role?: string; member_type?: string | null } | null = null
+  let profile: ProfileRow | null = null
   const withType = await supabase.from('profiles').select('role, member_type').eq('id', user.id).maybeSingle()
   if (withType.error) {
     const fallback = await supabase.from('profiles').select('role').eq('id', user.id).maybeSingle()
-    profile = fallback.data as typeof profile
+    profile = fallback.data as unknown as ProfileRow | null
   } else {
-    profile = withType.data as typeof profile
+    profile = withType.data as unknown as ProfileRow | null
   }
   const actual = memberTypeOf(profile)
 
