@@ -21,6 +21,15 @@ export const metadata: Metadata = {
   title: { default: SITE_NAME, template: `%s | ${SITE_NAME}` },
   description: 'Manage students, teachers, batches, fees, attendance and results for your coaching center.',
   applicationName: SITE_NAME,
+  // Favicon for browsers and Google search results (Google prefers a square icon of 48px or larger).
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: '48x48' },
+      { url: '/icon.png', type: 'image/png', sizes: '192x192' },
+    ],
+    shortcut: '/favicon.ico',
+    apple: '/apple-icon.png',
+  },
   openGraph: {
     type: 'website',
     siteName: SITE_NAME,
