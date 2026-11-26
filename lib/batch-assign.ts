@@ -22,11 +22,9 @@ export async function resolveBatch(admin: Admin, organizationId: string, choice:
 
     const monthlyFee = typeof choice.newBatchMonthlyFee === 'number' && Number.isFinite(choice.newBatchMonthlyFee) && choice.newBatchMonthlyFee >= 0 ? choice.newBatchMonthlyFee : null
     const base = { organization_id: organizationId, name: newName, level: 'General', capacity: 30, schedule: 'To be scheduled' }
-    let result = await admin
-      .from('batches')
-      .insert(monthlyFee === null ? base : { ...base, monthly_fee: monthlyFee })
-      .select('id, name')
-      .single()
+    let result = monthlyFee === null
+      ? await admin.from('batches').insert(base).select('id, name').single()
+      : await admin.from('batches').insert({ ...base, monthly_fee: monthlyFee }).select('id, name').single()
 
     if (result.error && monthlyFee !== null && /monthly_fee/i.test(result.error.message)) {
       throw new Error('Run docs/student-fees.sql in Supabase first, so batches can store a monthly fee.')
