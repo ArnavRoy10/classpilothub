@@ -6,6 +6,7 @@ import { LayoutDashboard, User, CalendarCheck, BarChart3, CalendarDays, Megaphon
 import { Logo } from '@/components/brand/logo'
 import { createClient } from '@/lib/supabase/client'
 import { NotificationCenter } from '@/components/app/notification-center'
+import { InstallAppButton } from '@/components/pwa/install-app-button'
 
 const items = [
   ['Overview', '/portal', LayoutDashboard],
@@ -36,6 +37,7 @@ export function PortalShell({ children, name, role, permissions }: { children: R
           <span className="hidden rounded-full bg-primary/15 px-2.5 py-0.5 text-[11px] font-medium text-primary sm:inline">{role === 'parent' ? 'Parent portal' : 'Student portal'}</span>
         </Link>
         <div className="flex items-center gap-2">
+          <InstallAppButton compact />
           <NotificationCenter portal />
           <div className="hidden items-center gap-2 rounded-full border border-border py-1 pr-3 pl-1 sm:flex">
             <span className="grid size-7 place-items-center rounded-full bg-primary/20 text-xs font-semibold text-primary">{initialsOf(name)}</span>
