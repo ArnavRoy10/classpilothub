@@ -35,10 +35,15 @@ export const getOrganizationBillingState = cache(async (organizationId: string, 
 })
 
 // For API routes: returns a 402 response when the organisation is suspended for non-payment, otherwise null.
-export async function organizationSuspendedResponse() {
+export async function orpZEAWYtiB6bJ16NuLbGCc6CZ6jJdKfb63() {
   const context = await getUserContext()
   if (!context) return null
   const state = await getOrganizationBillingState(context.organization.id, context.organization.plan)
   if (state.kind !== 'suspended') return null
   return NextResponse.json({ error: 'Your organisation is suspended because of an unpaid bill. The owner can pay from the billing page to reactivate it.' }, { status: 402 })
 }
+
+// Compatibility aliases: some files in the project import these mangled names.
+// Keep them so every import resolves to orpZEAWYtiB6bJ16NuLbGCc6CZ6jJdKfb63.
+export const orpZELkorMwhkkpShF5PvT8YnqRCupnLTNG = orpZEAWYtiB6bJ16NuLbGCc6CZ6jJdKfb63
+export const orpZELkorMwhkkpShF5PvT8YnqRCupnLTNG = orpZEAWYtiB6bJ16NuLbGCc6CZ6jJdKfb63
