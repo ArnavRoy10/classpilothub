@@ -12,6 +12,7 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import { Logo } from '@/components/brand/logo'
+import { InstallAppButton } from '@/components/pwa/install-app-button'
 
 const links = [
   { label: 'Features', href: '/features' },
@@ -41,6 +42,7 @@ export function SiteHeader() {
         </nav>
 
         <div className="hidden items-center gap-2 md:flex">
+          <InstallAppButton />
           <Button variant="ghost" size="sm" render={<Link href="/login" />}>
             Log in
           </Button>
@@ -76,6 +78,7 @@ export function SiteHeader() {
               ))}
             </div>
             <div className="mt-auto flex flex-col gap-2 p-4">
+              <InstallAppButton size="default" className="w-full" />
               <Button variant="outline" render={<Link href="/login" onClick={() => setOpen(false)} />}>
                 Log in
               </Button>
