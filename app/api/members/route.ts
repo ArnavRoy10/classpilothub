@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { getAdminClient } from '@/lib/supabase/admin'
-import { organizationSuspendedResponse } from '@/lib/billing-gate'
+import { orpZEAWYtiB6bJ16NuLbGCc6CZ6jJdKfb63 } from '@/lib/billing-gate'
 import { cleanPermissions, type MemberType } from '@/lib/permissions'
 import { linkStudentToBatch, resolveBatch, type ResolvedBatch } from '@/lib/batch-assign'
 
@@ -40,6 +40,13 @@ async function findMember(kind: Kind, id: string, organizationId: string) {
 
 const memberRole = (kind: Kind, isAdmin: boolean) => (isAdmin ? 'admin' : kind)
 
+// Optional money field: empty -> null, a valid amount -> number, anything else -> undefined (invalid).
+function parseFee(value: unknown): number | null | undefined {
+  if (value === null || value === undefined || value === '') return null
+  const amount = Number(value)
+  return Number.isFinite(amount) && amount >= 0 && amount <= 1_000_000 ? Math.round(amount * 100) / 100 : undefined
+}
+
 // GET /api/members?kind=teacher&id=...  -> current login settings for the edit form
 export async function GET(request: Request) {
   const caller = await getCaller()
@@ -63,7 +70,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   const caller = await getCaller()
   if ('response' in caller) return caller.response
-  const suspended = await organizationSuspendedResponse()
+  const suspended = await orpZEAWYtiB6bJ16NuLbGCc6CZ6jJdKfb63()
   if (suspended) return suspended
 
   const body = (await request.json().catch(() => null)) as Record<string, unknown> | null
@@ -83,6 +90,11 @@ export async function POST(request: Request) {
   if (kind === 'teacher' && subject.length < 2) return fail('Enter the subject.', 400)
   if (kind === 'student' && studentCode.length < 2) return fail('Enter the student code.', 400)
 
+  // Optional fees (students only): a special monthly fee for this student, and a monthly fee for a batch created in the same form.
+  const specialFee = parseFee(body.specialMonthlyFee)
+  const newBatchFee = parseFee(body.newBatchMonthlyFee)
+  if (kind === 'student' && (specialFee === undefined || newBatchFee === undefined)) return fail('Enter a valid fee amount, or leave it empty.', 400)
+
   const admin = getAdminClient()
 
   // Seat limit of the plan
@@ -95,7 +107,7 @@ export async function POST(request: Request) {
   let batch: ResolvedBatch | null = null
   if (kind === 'student') {
     try {
-      batch = await resolveBatch(admin, caller.organizationId, { batchId: String(body.batchId ?? ''), newBatchName: String(body.newBatchName ?? '') })
+      batch = await resolveBatch(admin, caller.organizationId, { batchId: String(body.batchId ?? ''), newBatchName: String(body.newBatchName ?? ''), newBatchMonthlyFee: newBatchFee })
     } catch (error) {
       return fail(error instanceof Error ? error.message : 'Could not use that batch.', 400)
     }
@@ -128,10 +140,12 @@ export async function POST(request: Request) {
         batch: batch?.name ?? null,
         guardian_name: String(body.guardianName ?? '').trim() || null,
         guardian_phone: String(body.guardianPhone ?? '').trim() || null,
+        ...(typeof specialFee === 'number' ? { special_monthly_fee: specialFee } : {}),
       }
   const { data: record, error: recordError } = await admin.from(recordTable).insert(recordPayload).select('id').single()
   if (recordError || !record) {
     await rollback()
+    if (recordError?.message?.includes('special_monthly_fee')) return fail('Run docs/student-fees.sql in Supabase first, so students can store a special fee.', 500)
     const message = recordError?.message?.includes('seat limit') ? recordError.message : recordError?.code === '23505' ? (kind === 'teacher' ? 'A teacher with that email already exists.' : 'That student code already exists.') : `Unable to save the ${kind}.`
     return fail(message, 400)
   }
