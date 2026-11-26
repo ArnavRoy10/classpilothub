@@ -12,7 +12,8 @@ import { StatusBadge } from '@/components/app/status-badge'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { createClient } from '@/lib/supabase/client'
 
-type Student = { id: string; full_name: string; student_code: string }
+type Student = { id: string; full_name: string; student_code: string; batch: string | null; special_monthly_fee: number | null }
+type BatchFee = { name: string; monthly_fee: number | null }
 type FeePlan = { id: string; name: string; amount: number; frequency: string; status: string }
 type StudentFee = { id: string; student_id: string; fee_plan_id: string; amount: number; due_date: string; status: 'paid' | 'pending' | 'partially_paid' | 'overdue' }
 type Payment = { student_fee_id: string; amount: number }
@@ -26,6 +27,7 @@ const frequencyLabel: Record<string, string> = { monthly: 'Monthly', quarterly: 
 export default function FeesPage() {
   const supabase = createClient()
   const [students, setStudents] = useState<Student[]>([])
+  const [batchFees, setBatchFees] = useState<BatchFee[]>([])
   const [plans, setPlans] = useState<FeePlan[]>([])
   const [fees, setFees] = useState<StudentFee[]>([])
   const [payments, setPayments] = useState<Payment[]>([])
@@ -42,14 +44,17 @@ export default function FeesPage() {
 
   async function loadData() {
     setLoading(true)
-    const [studentResult, planResult, feeResult, paymentResult] = await Promise.all([
-      supabase.from('students').select('id, full_name, student_code').order('full_name'),
+    const [studentResult, planResult, feeResult, paymentResult, batchResult] = await Promise.all([
+      supabase.from('students').select('*').order('full_name'),
       supabase.from('fee_plans').select('id, name, amount, frequency, status').order('created_at', { ascending: false }),
       supabase.from('student_fees').select('id, student_id, fee_plan_id, amount, due_date, status').order('due_date', { ascending: true }),
       supabase.from('payments').select('student_fee_id, amount'),
+      supabase.from('batches').select('*'),
     ])
     if (studentResult.error || planResult.error || feeResult.error || paymentResult.error) toast.error('Unable to load fee data')
-    const nextStudents = (studentResult.data ?? []) as Student[]
+    const optionalFee = (value: unknown) => (value === null || value === undefined || value === '' || !Number.isFinite(Number(value)) ? null : Number(value))
+    const nextStudents = ((studentResult.data ?? []) as Record<string, unknown>[]).map((row): Student => ({ id: String(row.id), full_name: String(row.full_name ?? ''), student_code: String(row.student_code ?? ''), batch: (row.batch as string | null | undefined) ?? null, special_monthly_fee: optionalFee(row.special_monthly_fee) }))
+    setBatchFees(((batchResult.data ?? []) as Record<string, unknown>[]).map((row): BatchFee => ({ name: String(row.name ?? ''), monthly_fee: optionalFee(row.monthly_fee) })))
     const nextPlans = (planResult.data ?? []) as FeePlan[]
     setStudents(nextStudents)
     setPlans(nextPlans)
@@ -66,10 +71,33 @@ export default function FeesPage() {
   const pending = useMemo(() => fees.filter((fee) => fee.status !== 'paid').reduce((sum, fee) => sum + Number(fee.amount), 0) - payments.reduce((sum, payment) => sum + Number(payment.amount), 0), [fees, payments])
   const overdue = fees.filter((fee) => fee.status === 'overdue').length
 
+  // What this student is charged each month: their special fee if they have one, otherwise their batch's fee.
+  function feeFor(studentId: string): { amount: number; label: string } | null {
+    const student = students.find((item) => item.id === studentId)
+    if (!student) return null
+    if (student.special_monthly_fee !== null) return { amount: student.special_monthly_fee, label: 'special fee set for this student' }
+    const batch = batchFees.find((item) => item.name === student.batch)
+    if (batch && batch.monthly_fee !== null) return { amount: batch.monthly_fee, label: `${batch.name} batch fee` }
+    return null
+  }
+
+  function selectStudent(id: string) {
+    setFeeForm((current) => {
+      const fee = id ? feeFor(id) : null
+      const plan = plans.find((item) => item.id === current.fee_plan_id)
+      return { ...current, student_id: id, amount: fee && fee.amount > 0 ? String(fee.amount) : plan ? String(plan.amount) : '' }
+    })
+  }
+
   function selectPlan(id: string) {
     const plan = plans.find((item) => item.id === id)
-    setFeeForm((current) => ({ ...current, fee_plan_id: id, amount: plan ? String(plan.amount) : current.amount }))
+    setFeeForm((current) => {
+      const fee = current.student_id ? feeFor(current.student_id) : null
+      return { ...current, fee_plan_id: id, amount: fee && fee.amount > 0 ? String(fee.amount) : plan ? String(plan.amount) : current.amount }
+    })
   }
+
+  const suggested = feeForm.student_id ? feeFor(feeForm.student_id) : null
 
   async function createPlan(event: React.FormEvent) {
     event.preventDefault()
@@ -118,7 +146,7 @@ export default function FeesPage() {
     {qrImage && <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setQrImage(null)}><Card className="p-6" onClick={(event) => event.stopPropagation()}><CardTitle className="mb-3">Scan to pay</CardTitle><img src={qrImage} alt="Payment QR code" className="mx-auto size-64" /><Button className="mt-4 w-full" variant="outline" onClick={() => setQrImage(null)}><X data-icon="inline-start" />Close</Button></Card></div>}
     <PageHeader title="Fees" description="Manage fee plans, invoices, payments and outstanding dues." actions={<><Button variant="outline" onClick={exportFees}><Download data-icon="inline-start" />Export</Button><Button variant="outline" onClick={() => setOpenPlan((value) => !value)}><Plus data-icon="inline-start" />Fee plan</Button><Button onClick={() => setOpenFee((value) => !value)}><Plus data-icon="inline-start" />Create invoice</Button></>} />
     {openPlan && <Card><CardHeader><CardTitle>Create fee plan</CardTitle><CardDescription>Plans are visible only to your organization&apos;s owners and admins.</CardDescription></CardHeader><CardContent><form onSubmit={createPlan} className="grid gap-4 sm:grid-cols-4"><div className="grid gap-2 sm:col-span-2"><Label htmlFor="plan-name">Plan name</Label><Input id="plan-name" value={planForm.name} onChange={(event) => setPlanForm({ ...planForm, name: event.target.value })} required /></div><div className="grid gap-2"><Label htmlFor="plan-amount">Amount</Label><Input id="plan-amount" type="number" min="1" step="0.01" value={planForm.amount} onChange={(event) => setPlanForm({ ...planForm, amount: event.target.value })} required /></div><div className="grid gap-2"><Label htmlFor="plan-frequency">Frequency</Label><select id="plan-frequency" className="h-9 rounded-md border border-input bg-background px-3 text-sm" value={planForm.frequency} onChange={(event) => setPlanForm({ ...planForm, frequency: event.target.value })}>{Object.entries(frequencyLabel).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></div><div className="flex gap-2 sm:col-span-4"><Button disabled={saving} type="submit">{saving && <Loader2 className="animate-spin" data-icon="inline-start" />}Create plan</Button><Button type="button" variant="outline" onClick={() => setOpenPlan(false)}><X data-icon="inline-start" />Cancel</Button></div></form></CardContent></Card>}
-    {openFee && <Card><CardHeader><CardTitle>Create invoice</CardTitle><CardDescription>Assign a fee plan to a student and set the due date.</CardDescription></CardHeader><CardContent><form onSubmit={createFee} className="grid gap-4 sm:grid-cols-4"><div className="grid gap-2 sm:col-span-2"><Label htmlFor="fee-student">Student</Label><select id="fee-student" className="h-9 rounded-md border border-input bg-background px-3 text-sm" value={feeForm.student_id} onChange={(event) => setFeeForm({ ...feeForm, student_id: event.target.value })} required><option value="">Select student</option>{students.map((student) => <option key={student.id} value={student.id}>{student.full_name} ({student.student_code})</option>)}</select></div><div className="grid gap-2"><Label htmlFor="fee-plan">Fee plan</Label><select id="fee-plan" className="h-9 rounded-md border border-input bg-background px-3 text-sm" value={feeForm.fee_plan_id} onChange={(event) => selectPlan(event.target.value)} required><option value="">Select plan</option>{plans.filter((plan) => plan.status === 'active').map((plan) => <option key={plan.id} value={plan.id}>{plan.name} · ₹{Number(plan.amount).toLocaleString('en-IN')}</option>)}</select></div><div className="grid gap-2"><Label htmlFor="fee-amount">Amount</Label><Input id="fee-amount" type="number" min="1" step="0.01" value={feeForm.amount} onChange={(event) => setFeeForm({ ...feeForm, amount: event.target.value })} required /></div><div className="grid gap-2"><Label htmlFor="fee-due">Due date</Label><Input id="fee-due" type="date" value={feeForm.due_date} onChange={(event) => setFeeForm({ ...feeForm, due_date: event.target.value })} required /></div><div className="flex gap-2 sm:col-span-4"><Button disabled={saving} type="submit">{saving && <Loader2 className="animate-spin" data-icon="inline-start" />}Create invoice</Button><Button type="button" variant="outline" onClick={() => setOpenFee(false)}><X data-icon="inline-start" />Cancel</Button></div></form></CardContent></Card>}
+    {openFee && <Card><CardHeader><CardTitle>Create invoice</CardTitle><CardDescription>Assign a fee plan to a student and set the due date.</CardDescription></CardHeader><CardContent><form onSubmit={createFee} className="grid gap-4 sm:grid-cols-4"><div className="grid gap-2 sm:col-span-2"><Label htmlFor="fee-student">Student</Label><select id="fee-student" className="h-9 rounded-md border border-input bg-background px-3 text-sm" value={feeForm.student_id} onChange={(event) => selectStudent(event.target.value)} required><option value="">Select student</option>{students.map((student) => <option key={student.id} value={student.id}>{student.full_name} ({student.student_code})</option>)}</select></div><div className="grid gap-2"><Label htmlFor="fee-plan">Fee plan</Label><select id="fee-plan" className="h-9 rounded-md border border-input bg-background px-3 text-sm" value={feeForm.fee_plan_id} onChange={(event) => selectPlan(event.target.value)} required><option value="">Select plan</option>{plans.filter((plan) => plan.status === 'active').map((plan) => <option key={plan.id} value={plan.id}>{plan.name} · ₹{Number(plan.amount).toLocaleString('en-IN')}</option>)}</select></div><div className="grid gap-2"><Label htmlFor="fee-amount">Amount</Label><Input id="fee-amount" type="number" min="1" step="0.01" value={feeForm.amount} onChange={(event) => setFeeForm({ ...feeForm, amount: event.target.value })} required />{suggested && <p className="text-xs text-muted-foreground">{suggested.amount > 0 ? `₹${suggested.amount.toLocaleString('en-IN')} from the ${suggested.label}.` : 'This student is marked free (₹0), so no invoice is needed.'}</p>}</div><div className="grid gap-2"><Label htmlFor="fee-due">Due date</Label><Input id="fee-due" type="date" value={feeForm.due_date} onChange={(event) => setFeeForm({ ...feeForm, due_date: event.target.value })} required /></div><div className="flex gap-2 sm:col-span-4"><Button disabled={saving} type="submit">{saving && <Loader2 className="animate-spin" data-icon="inline-start" />}Create invoice</Button><Button type="button" variant="outline" onClick={() => setOpenFee(false)}><X data-icon="inline-start" />Cancel</Button></div></form></CardContent></Card>}
     <div className="grid gap-4 md:grid-cols-3">{([{ label: 'Collected', value: `₹${collected.toLocaleString('en-IN')}`, Icon: Wallet }, { label: 'Outstanding', value: `₹${Math.max(pending, 0).toLocaleString('en-IN')}`, Icon: Receipt }, { label: 'Overdue invoices', value: String(overdue), Icon: Receipt }]).map(({ label, value, Icon }) => <Card key={label}><div className="flex items-center gap-3 p-5"><Icon className="size-5 text-primary" /><div><p className="text-2xl font-bold">{value}</p><p className="text-sm text-muted-foreground">{label}</p></div></div></Card>)}</div>
     <Card><CardHeader><CardTitle>Fee plans</CardTitle><CardDescription>{plans.length} plans configured for your organization.</CardDescription></CardHeader><CardContent className="grid gap-3 md:grid-cols-3">{plans.map((plan) => <div key={plan.id} className="rounded-lg border bg-muted/20 p-4"><div className="flex items-start justify-between gap-3"><div><p className="font-medium">{plan.name}</p><p className="text-sm text-muted-foreground">{frequencyLabel[plan.frequency] ?? plan.frequency}</p></div><StatusBadge status={plan.status} /></div><p className="mt-3 text-xl font-semibold">₹{Number(plan.amount).toLocaleString('en-IN')}</p></div>)}{plans.length === 0 && <p className="text-sm text-muted-foreground">No fee plans yet. Create one to issue invoices.</p>}</CardContent></Card>
     {loading ? <div className="flex items-center gap-2 text-sm text-muted-foreground"><Loader2 className="animate-spin" />Loading fee records…</div> : <Card className="overflow-hidden p-0"><Table><TableHeader><TableRow><TableHead>Student</TableHead><TableHead>Plan</TableHead><TableHead>Amount</TableHead><TableHead>Due date</TableHead><TableHead>Status</TableHead><TableHead>Collect</TableHead></TableRow></TableHeader><TableBody>{fees.map((fee) => <TableRow key={fee.id}><TableCell className="font-medium">{studentNames[fee.student_id] ?? 'Unknown student'}</TableCell><TableCell className="text-muted-foreground">{planNames[fee.fee_plan_id] ?? 'Unknown plan'}</TableCell><TableCell>₹{Number(fee.amount).toLocaleString('en-IN')}</TableCell><TableCell>{fee.due_date}</TableCell><TableCell><StatusBadge status={fee.status === 'partially_paid' ? 'pending' : fee.status} /></TableCell><TableCell>{fee.status !== 'paid' && <div className="flex gap-2"><Button size="sm" variant="outline" disabled={collectingId === fee.id} onClick={() => collect(fee.id, fee.status, 'link')}>{collectingId === fee.id ? <Loader2 className="animate-spin" /> : <LinkIcon data-icon="inline-start" />}Link</Button><Button size="sm" variant="outline" disabled={collectingId === fee.id} onClick={() => collect(fee.id, fee.status, 'qr')}>{collectingId === fee.id ? <Loader2 className="animate-spin" /> : <QrCode data-icon="inline-start" />}QR</Button></div>}</TableCell></TableRow>)}{fees.length === 0 && <TableRow><TableCell colSpan={6} className="py-10 text-center text-muted-foreground">No invoices yet.</TableCell></TableRow>}</TableBody></Table></Card>}
