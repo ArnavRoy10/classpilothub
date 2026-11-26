@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { getAdminClient } from '@/lib/supabase/admin'
-import { orpZEAWYtiB6bJ16NuLbGCc6CZ6jJdKfb63 } from '@/lib/billing-gate'
+import { orpZELkorMwhkkpShF5PvT8YnqRCupnLTNG as orpZEAWYtiB6bJ16NuLbGCc6CZ6jJdKfb63 } from '@/lib/billing-gate'
 import { cleanPermissions, type MemberType } from '@/lib/permissions'
 import { linkStudentToBatch, resolveBatch, type ResolvedBatch } from '@/lib/batch-assign'
 
