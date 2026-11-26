@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { organizationSuspendedResponse } from '@/lib/billing-gate'
+import { orpZEAWYtiB6bJ16NuLbGCc6CZ6jJdKfb63 } from '@/lib/billing-gate'
 import { getAdminClient } from '@/lib/supabase/admin'
 import { createFeeQrCode, razorpay } from '@/lib/razorpay'
 
@@ -14,7 +14,7 @@ export async function POST(request: Request) {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: 'Not signed in.' }, { status: 401 })
-    const locked = await organizationSuspendedResponse()
+    const locked = await orpZEAWYtiB6bJ16NuLbGCc6CZ6jJdKfb63()
     if (locked) return locked
 
     const { data: profile } = await supabase.from('profiles').select('organization_id').eq('id', user.id).maybeSingle()
