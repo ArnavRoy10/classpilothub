@@ -4,7 +4,7 @@ import { getAdminClient } from '@/lib/supabase/admin'
 
 type Admin = ReturnType<typeof getAdminClient>
 
-export type BatchChoice = { batchId?: string | null; newBatchName?: string | null }
+export type BatchChoice = { batchId?: string | null; newBatchName?: string | null; newBatchMonthlyFee?: number | null }
 export type ResolvedBatch = { id: string; name: string; created: boolean }
 
 // Finds the batch a student should join, or creates it when a new name was typed.
@@ -20,11 +20,17 @@ export async function resolveBatch(admin: Admin, organizationId: string, choice:
     const { data: existing } = await admin.from('batches').select('id, name').eq('organization_id', organizationId).ilike('name', escaped).limit(1).maybeSingle()
     if (existing) return { id: existing.id as string, name: existing.name as string, created: false }
 
+    const monthlyFee = typeof choice.newBatchMonthlyFee === 'number' && Number.isFinite(choice.newBatchMonthlyFee) && choice.newBatchMonthlyFee >= 0 ? choice.newBatchMonthlyFee : null
+    const base = { organization_id: organizationId, name: newName, level: 'General', capacity: 30, schedule: 'To be scheduled' }
     let result = await admin
       .from('batches')
-      .insert({ organization_id: organizationId, name: newName, level: 'General', capacity: 30, schedule: 'To be scheduled' })
+      .insert(monthlyFee === null ? base : { ...base, monthly_fee: monthlyFee })
       .select('id, name')
       .single()
+
+    if (result.error && monthlyFee !== null && /monthly_fee/i.test(result.error.message)) {
+      throw new Error('Run docs/student-fees.sql in Supabase first, so batches can store a monthly fee.')
+    }
 
     // The table may not have the optional columns yet (level, capacity, schedule): create it with just the name.
     if (result.error && /column|schema cache/i.test(result.error.message)) {
