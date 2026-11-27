@@ -16,6 +16,10 @@ const pages = [
   { href: '/about', label: 'About', text: 'The founder and why ClassPilotHub is being built.' },
   { href: '/contact', label: 'Contact', text: 'Get in touch for a demo, pricing or support.' },
   { href: '/tutors', label: 'Find a tutor', text: 'Browse tutors and coaching centers taking new students.' },
+  { href: '/privacy', label: 'Privacy', text: 'How ClassPilotHub handles account and workspace data.' },
+  { href: '/terms', label: 'Terms of service', text: 'The terms that govern use of ClassPilotHub.' },
+  { href: '/security', label: 'Security', text: 'Security practices for ClassPilotHub workspaces.' },
+  { href: '/login', label: 'Log in', text: 'Sign in to your ClassPilotHub workspace.' },
 ]
 
 export default function SitemapPage() {
