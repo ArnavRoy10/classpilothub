@@ -4,9 +4,10 @@ import { HowItWorks } from '@/components/marketing/how-it-works'
 import { Cta } from '@/components/marketing/cta'
 
 export const metadata: Metadata = {
-  title: 'Features',
+  title: 'Features: Coaching Management Software',
   description:
-    'Students, teachers, batches, attendance, fees, tests, results, timetable and announcements — every module your coaching center needs.',
+    'Students, teachers, batches, attendance, fees, tests, results, timetable and announcements. Every module a coaching institute needs, in one place.',
+  alternates: { canonical: '/features' },
 }
 
 export default function FeaturesPage() {
