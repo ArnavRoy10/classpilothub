@@ -1,12 +1,5 @@
 // Pages that should never appear in Google (they stay reachable by link).
 const NOINDEX_PAGES = [
-  '/features',
-  '/pricing',
-  '/about',
-  '/demo',
-  '/contact',
-  '/tutors',
-  '/sitemap',
   '/terms',
   '/privacy',
   '/security',
