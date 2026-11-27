@@ -4,15 +4,15 @@ import { getSiteContent } from '@/lib/site-content'
 
 export async function SiteFooter() {
   const { text } = await getSiteContent()
-  const email = text['site.contactEmail']
 
   const columns = [
     {
       title: 'Product',
       links: [
         { label: 'Features', href: '/features' },
-        { label: 'Find a tutor', href: '/tutors' },
         { label: 'Pricing', href: '/pricing' },
+        { label: 'Book a free demo', href: '/demo' },
+        { label: 'Find a tutor', href: '/tutors' },
         { label: 'How it works', href: '/#how-it-works' },
         { label: 'FAQ', href: '/#faq' },
       ],
@@ -21,8 +21,8 @@ export async function SiteFooter() {
       title: 'Company',
       links: [
         { label: 'About', href: '/about' },
-        { label: 'Careers', href: `mailto:${email}?subject=Careers` },
-        { label: 'Contact', href: `mailto:${email}` },
+        { label: 'Contact', href: '/contact' },
+        { label: 'Sitemap', href: '/sitemap' },
         { label: 'Marketing kit', href: '/marketing-kit' },
       ],
     },
