@@ -29,7 +29,7 @@ export function FounderShell({ children }: { children: React.ReactNode }) {
     <div className="relative isolate min-h-dvh bg-background text-foreground">
       <header className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur">
         <div className="flex h-16 items-center justify-between gap-3 px-3 sm:px-6">
-          <Link href="/founder" className="flex items-center gap-3" aria-label="ClassPilot founder console">
+          <Link href="/founder" className="flex items-center gap-3" aria-label="ClassPilotHub founder console">
             <Logo />
             <span className="hidden rounded-full bg-primary/15 px-2.5 py-0.5 text-[11px] font-medium text-primary sm:inline">Founder console</span>
           </Link>

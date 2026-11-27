@@ -4,7 +4,7 @@ import { GraduationCap, Wallet, BarChart3 } from 'lucide-react'
 import { Logo } from '@/components/brand/logo'
 
 export const metadata: Metadata = {
-  title: { default: 'Account access', template: '%s | ClassPilot' },
+  title: { default: 'Account access', template: '%s | ClassPilotHub' },
   robots: { index: false, follow: false },
 }
 
@@ -22,7 +22,7 @@ export default function AuthLayout({
   return (
     <div className="grid min-h-dvh lg:grid-cols-2">
       <div className="flex flex-col p-6 sm:p-10">
-        <Link href="/" aria-label="ClassPilot home">
+        <Link href="/" aria-label="ClassPilotHub home">
           <Logo />
         </Link>
         <div className="flex flex-1 items-center justify-center py-10">
@@ -37,7 +37,7 @@ export default function AuthLayout({
         />
         <div className="relative flex flex-col justify-center gap-8 p-12">
           <blockquote className="font-display text-2xl font-semibold leading-snug text-balance">
-            “ClassPilot replaced four different registers and a messy
+            “ClassPilotHub replaced four different registers and a messy
             spreadsheet. Our front desk finally has one place for everything.”
           </blockquote>
           <div className="text-sm text-primary-foreground/80">

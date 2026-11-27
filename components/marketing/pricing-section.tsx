@@ -88,7 +88,7 @@ export function PricingSection() {
         </p>
         <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
           <Button render={<Link href="/signup" />}>Start free trial</Button>
-          <Button variant="outline" render={<a href="mailto:arnavbhi5@gmail.com?subject=ClassPilot%20demo" />}>Book a demo</Button>
+          <Button variant="outline" render={<a href="mailto:arnavbhi5@gmail.com?subject=ClassPilotHub%20demo" />}>Book a demo</Button>
         </div>
       </div>
 

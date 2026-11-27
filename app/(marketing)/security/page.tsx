@@ -2,13 +2,13 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Security',
-  description: 'Security practices for ClassPilot workspaces.',
+  description: 'Security practices for ClassPilotHub workspaces.',
 }
 
 export default function SecurityPage() {
   return (
     <main className="mx-auto max-w-3xl px-4 py-16 sm:px-6">
-      <p className="text-sm font-medium text-primary">ClassPilot trust</p>
+      <p className="text-sm font-medium text-primary">ClassPilotHub trust</p>
       <h1 className="mt-3 font-display text-4xl font-bold tracking-tight text-foreground">Security</h1>
       <p className="mt-4 text-sm text-muted-foreground">A practical security baseline for coaching-center operations.</p>
       <div className="mt-10 space-y-8 text-sm leading-7 text-muted-foreground">

@@ -38,7 +38,7 @@ export async function POST(request: Request) {
   const apiKey = process.env.RESEND_API_KEY
   if (!apiKey) return NextResponse.json({ error: 'Email delivery is not configured.' }, { status: 503 })
   const resend = new Resend(apiKey)
-  const from = `ClassPilot <${process.env.RESEND_EMAIL_DOMAIN ? `no-reply@${process.env.RESEND_EMAIL_DOMAIN}` : 'onboarding@resend.dev'}>`
+  const from = `ClassPilotHub <${process.env.RESEND_EMAIL_DOMAIN ? `no-reply@${process.env.RESEND_EMAIL_DOMAIN}` : 'onboarding@resend.dev'}>`
   const { data: sent, error: sendError } = await resend.emails.send({ from, to: validRecipients.map((recipient) => recipient.email), subject, text: body }, { idempotencyKey: `communication/${message.id}` })
   if (sendError) {
     await supabase.from('communication_messages').update({ status: 'failed', error_message: sendError.message }).eq('id', message.id)

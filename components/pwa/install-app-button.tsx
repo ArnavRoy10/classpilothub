@@ -60,11 +60,11 @@ export function InstallAppButton({ className, variant = 'outline', size = 'sm', 
       {showHelp && (
         <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-4 sm:items-center" onClick={() => setShowHelp(false)}>
           <Card className="w-full max-w-sm" onClick={(event) => event.stopPropagation()}>
-            <CardHeader><CardTitle>Install ClassPilot</CardTitle></CardHeader>
+            <CardHeader><CardTitle>Install ClassPilotHub</CardTitle></CardHeader>
             <CardContent className="flex flex-col gap-3 text-sm">
               <p className="flex items-start gap-2"><span className="font-semibold">1.</span><span>Open this page in <strong>Safari</strong>, then tap the <Share className="mx-1 inline size-4 align-text-bottom" /><strong>Share</strong> button.</span></p>
               <p className="flex items-start gap-2"><span className="font-semibold">2.</span><span>Scroll down and tap <strong>Add to Home Screen</strong>.</span></p>
-              <p className="flex items-start gap-2"><span className="font-semibold">3.</span><span>Tap <strong>Add</strong>. ClassPilot now opens like an app.</span></p>
+              <p className="flex items-start gap-2"><span className="font-semibold">3.</span><span>Tap <strong>Add</strong>. ClassPilotHub now opens like an app.</span></p>
               <Button type="button" variant="outline" className="mt-1 w-full" onClick={() => setShowHelp(false)}><X data-icon="inline-start" />Close</Button>
             </CardContent>
           </Card>

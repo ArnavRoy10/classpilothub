@@ -24,7 +24,7 @@ export function AppSidebar({ userContext }: { userContext: UserContext | null })
   return (
     <Sidebar>
       <SidebarHeader>
-        <Link href="/dashboard" className="px-2 py-1.5" aria-label="ClassPilot dashboard">
+        <Link href="/dashboard" className="px-2 py-1.5" aria-label="ClassPilotHub dashboard">
           <Logo />
         </Link>
       </SidebarHeader>

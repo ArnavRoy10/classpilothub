@@ -32,7 +32,7 @@ export function PortalShell({ children, name, role, permissions }: { children: R
       <div aria-hidden="true" className="aurora pointer-events-none fixed inset-0 -z-10 opacity-40" />
 
       <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-3 border-b border-border bg-background/95 px-3 backdrop-blur sm:px-6">
-        <Link href="/portal" className="flex items-center gap-3" aria-label="ClassPilot student portal">
+        <Link href="/portal" className="flex items-center gap-3" aria-label="ClassPilotHub student portal">
           <Logo />
           <span className="hidden rounded-full bg-primary/15 px-2.5 py-0.5 text-[11px] font-medium text-primary sm:inline">{role === 'parent' ? 'Parent portal' : 'Student portal'}</span>
         </Link>

@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { User, CreditCard, Building2 } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Settings | ClassPilot',
+  title: 'Settings | ClassPilotHub',
   description: 'Manage your organization settings and billing',
 }
 

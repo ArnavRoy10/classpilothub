@@ -16,7 +16,7 @@ export default async function BillingPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <PageHeader title="Billing & plan" description="Manage your ClassPilot subscription and workspace limits." />
+      <PageHeader title="Billing & plan" description="Manage your ClassPilotHub subscription and workspace limits." />
       <BillingPanel
         organization={context.organization}
         subscription={context.subscription}

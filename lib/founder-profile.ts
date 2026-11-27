@@ -3,19 +3,19 @@
 
 export const FOUNDER = {
   name: 'Arnav Roy',
-  role: 'Founder, ClassPilot',
+  role: 'Founder, ClassPilotHub',
   // Put your photo in the "public" folder with this exact file name.
   photo: '/founder.jpg',
   email: 'arnavbhi5@gmail.com',
 
   headline: 'I build tools that give teachers their time back.',
   intro:
-    'I’m the founder of ClassPilot, a workspace for tutors, teachers and coaching centers to run attendance, fees, tests and results without the paperwork.',
+    'I’m the founder of ClassPilotHub, a workspace for tutors, teachers and coaching centers to run attendance, fees, tests and results without the paperwork.',
 
   story: [
-    'ClassPilot exists because running a class should not mean running after registers, reminders and spreadsheets. Teaching is the work. Everything around it should stay out of the way.',
+    'ClassPilotHub exists because running a class should not mean running after registers, reminders and spreadsheets. Teaching is the work. Everything around it should stay out of the way.',
     'So I’m building one clear place where a tutor or a coaching center can keep students, batches, attendance, fees and results together, and where every teacher and student gets exactly the access they need.',
-    'It is still growing, and I read every message. If something in ClassPilot confuses you or is missing, tell me.',
+    'It is still growing, and I read every message. If something in ClassPilotHub confuses you or is missing, tell me.',
   ],
 
   principles: [

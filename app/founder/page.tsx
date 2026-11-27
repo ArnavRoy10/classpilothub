@@ -48,7 +48,7 @@ export default async function FounderAdminPage() {
         <FounderPhoto size={72} />
         <div className="flex flex-col gap-1">
           <p className="text-sm font-medium text-primary">Founder console · {FOUNDER.name}</p>
-          <h1 className="text-3xl font-semibold tracking-tight">ClassPilot operations</h1>
+          <h1 className="text-3xl font-semibold tracking-tight">ClassPilotHub operations</h1>
           <p className="max-w-2xl text-sm leading-6 text-muted-foreground">Open any organization to edit it, change its plan and limits, give free days, make it free, or manage its members. Every change is written to the audit log.</p>
         </div>
       </header>

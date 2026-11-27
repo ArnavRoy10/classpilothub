@@ -31,7 +31,7 @@ export function AppSidebar({ userContext }: { userContext: UserContext | null })
   return (
     <Sidebar variant="floating" collapsible="icon">
       <SidebarHeader>
-        <Link href="/" className="block overflow-hidden px-2 py-1.5" aria-label="ClassPilot home">
+        <Link href="/" className="block overflow-hidden px-2 py-1.5" aria-label="ClassPilotHub home">
           <Logo />
         </Link>
       </SidebarHeader>

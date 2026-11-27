@@ -18,7 +18,7 @@ export default function FeaturesPage() {
             Every module your center needs
           </h1>
           <p className="mt-4 text-lg leading-relaxed text-pretty text-muted-foreground">
-            ClassPilot replaces the tangle of registers and spreadsheets with
+            ClassPilotHub replaces the tangle of registers and spreadsheets with
             focused, connected tools your whole team can share.
           </p>
         </div>

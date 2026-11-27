@@ -2,8 +2,8 @@ import type { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'ClassPilot',
-    short_name: 'ClassPilot',
+    name: 'ClassPilotHub',
+    short_name: 'ClassPilotHub',
     description: 'Manage students, batches, attendance, fees and results for your coaching center.',
     // /dashboard sends logged-out people to the login page and students/parents on to their portal.
     start_url: '/dashboard',

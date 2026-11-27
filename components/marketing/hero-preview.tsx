@@ -41,7 +41,7 @@ export function HeroPreview() {
       <div className="hero-preview-card relative z-10 overflow-hidden border border-foreground bg-card p-2 shadow-[8px_8px_0_var(--foreground)] sm:p-3 sm:shadow-[14px_14px_0_var(--foreground)]">
         <Image
           src="/hero-dashboard.png"
-          alt="ClassPilot workspace preview showing student, attendance and fee information"
+          alt="ClassPilotHub workspace preview showing student, attendance and fee information"
           width={1600}
           height={1000}
           priority

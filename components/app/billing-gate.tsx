@@ -52,7 +52,7 @@ export function PaymentDuePopup({ state, isOwner, orgName }: { state: BillingSta
           </div>
         </div>
 
-        <p className="text-sm text-muted-foreground">{reasonText(state)} Pay now to keep using ClassPilot without interruption.</p>
+        <p className="text-sm text-muted-foreground">{reasonText(state)} Pay now to keep using ClassPilotHub without interruption.</p>
 
         <div className="my-4 rounded-lg border bg-muted/40 p-4">
           <div className="flex items-baseline justify-between">

@@ -6,7 +6,7 @@ import { Cta } from '@/components/marketing/cta'
 export const metadata: Metadata = {
   title: 'Simple pricing for tutors and coaching centers',
   description:
-    'Choose a ClassPilot plan for solo tutoring, growing coaching centers, or multi-branch operations. Start with a 14-day free trial.',
+    'Choose a ClassPilotHub plan for solo tutoring, growing coaching centers, or multi-branch operations. Start with a 14-day free trial.',
   alternates: { canonical: '/pricing' },
 }
 

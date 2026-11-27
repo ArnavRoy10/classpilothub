@@ -3,7 +3,7 @@ import { ImageResponse } from 'next/og'
 export const size = { width: 180, height: 180 }
 export const contentType = 'image/png'
 
-// Icon used when someone adds ClassPilot to their iPhone/iPad home screen.
+// Icon used when someone adds ClassPilotHub to their iPhone/iPad home screen.
 export default function AppleIcon() {
   return new ImageResponse(
     (

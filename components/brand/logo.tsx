@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils'
 
 /**
- * ClassPilot wordmark. The mark is a simple compass/pilot glyph built from
+ * ClassPilotHub wordmark. The mark is a simple compass/pilot glyph built from
  * currentColor so it adapts to light and dark surfaces.
  */
 export function Logo({
@@ -40,7 +40,7 @@ export function Logo({
       </span>
       {showText && (
         <span className="font-display text-lg font-bold tracking-tight text-foreground">
-          ClassPilot
+          ClassPilotHub
         </span>
       )}
     </span>

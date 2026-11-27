@@ -8,7 +8,7 @@ import {
 const faqs = [
   {
     q: 'Is my center’s data kept separate from other centers?',
-    a: 'Yes. ClassPilot is multi-tenant by design — each coaching center gets its own isolated workspace, and staff can only ever see data that belongs to their center.',
+    a: 'Yes. ClassPilotHub is multi-tenant by design — each coaching center gets its own isolated workspace, and staff can only ever see data that belongs to their center.',
   },
   {
     q: 'Can I add multiple teachers and staff?',

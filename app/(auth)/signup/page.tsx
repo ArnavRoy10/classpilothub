@@ -74,7 +74,7 @@ function SignupForm() {
         return
       }
 
-      toast.success(`Welcome to ClassPilot — ${plan} is ready`)
+      toast.success(`Welcome to ClassPilotHub — ${plan} is ready`)
       router.push('/dashboard')
       return
     }
@@ -87,7 +87,7 @@ function SignupForm() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-2">
-        <h1 className="font-display text-2xl font-bold tracking-tight text-foreground">Create your ClassPilot account</h1>
+        <h1 className="font-display text-2xl font-bold tracking-tight text-foreground">Create your ClassPilotHub account</h1>
         <p className="text-sm text-muted-foreground">Choose the setup that fits how you teach. Start with a 14-day free trial.</p>
       </div>
 

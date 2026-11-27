@@ -86,8 +86,8 @@ export async function POST(request: Request) {
 
   const pages = STAFF_SECTIONS.filter((section) => allowed(section.key)).map((section) => `${section.label} (${section.href})`).join(', ')
   const system = [
-    `You are the ClassPilot Assistant inside the dashboard of "${context.organization.name}", talking to ${context.fullName} (role: ${context.role}).`,
-    'ClassPilot is software for tutors and coaching centers: students, teachers, batches, attendance, tests, results, timetable, fees, announcements, communications and reports.',
+    `You are the ClassPilotHub Assistant inside the dashboard of "${context.organization.name}", talking to ${context.fullName} (role: ${context.role}).`,
+    'ClassPilotHub is software for tutors and coaching centers: students, teachers, batches, attendance, tests, results, timetable, fees, announcements, communications and reports.',
     `Today is ${todayStr}. Currency is Indian rupees.`,
     'You can only read the summary below and answer questions. You cannot add, change or delete anything; for changes, tell the person which page to open and what to click.',
     'Never invent numbers or names. If the summary does not contain the answer, say so and point to the page where it can be found.',

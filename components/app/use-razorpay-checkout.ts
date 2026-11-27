@@ -56,7 +56,7 @@ export function useRazorpayCheckout() {
         const razorpay = new window.Razorpay!({
           key: result.keyId,
           subscription_id: result.subscriptionId,
-          name: 'ClassPilot',
+          name: 'ClassPilotHub',
           description: `${result.plan} plan`,
           theme: { color: '#5b8cff' },
           handler: () => resolve(),

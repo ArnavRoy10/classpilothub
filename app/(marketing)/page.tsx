@@ -15,16 +15,16 @@ export const revalidate = 60
 
 export const metadata: Metadata = {
   title: 'Coaching center software that keeps classes moving',
-  description: 'ClassPilot helps tutors and coaching centers manage students, batches, attendance, fees, tests, and results in one clear workspace.',
+  description: 'ClassPilotHub helps tutors and coaching centers manage students, batches, attendance, fees, tests, and results in one clear workspace.',
   alternates: { canonical: '/' },
   openGraph: {
-    title: 'ClassPilot — Run the class. Not the chaos.',
+    title: 'ClassPilotHub — Run the class. Not the chaos.',
     description: 'A dependable workspace for the people and routines behind great classes.',
     url: '/',
   },
 }
 
-// Tells Google the site's name and logo, so results show "ClassPilot"
+// Tells Google the site's name and logo, so results show "ClassPilotHub"
 // instead of the bare domain.
 const structuredData = {
   '@context': 'https://schema.org',
@@ -34,7 +34,7 @@ const structuredData = {
       '@id': `${SITE_URL}/#website`,
       url: `${SITE_URL}/`,
       name: SITE_NAME,
-      alternateName: ['ClassPilot Hub', 'classpilothub.me'],
+      alternateName: ['ClassPilotHub Hub', 'classpilothub.me'],
       inLanguage: 'en',
     },
     {

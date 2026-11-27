@@ -43,7 +43,7 @@ export async function POST(request: Request) {
       amount: plan.monthly,
       organizationId: context.organization.id,
       plan: planId,
-      description: `ClassPilot ${plan.name} - 1 month`,
+      description: `ClassPilotHub ${plan.name} - 1 month`,
     })
 
     return NextResponse.json({

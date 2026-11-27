@@ -40,7 +40,7 @@ export function HeroScene() {
       onPointerMove={onMove}
       onPointerLeave={onLeave}
       role="img"
-      aria-label="Decorative 3D scene of ClassPilot features floating around a glowing orb"
+      aria-label="Decorative 3D scene of ClassPilotHub features floating around a glowing orb"
       className="relative mx-auto aspect-square w-full max-w-[520px]"
     >
       <div className="pointer-events-none absolute inset-[12%] rounded-full bg-violet-glow/40 blur-3xl" />

@@ -19,7 +19,7 @@ export const SITE_FIELDS: FieldDef[] = [
   { page: 'Home', group: 'Top section (hero)', key: 'home.hero.badge', label: 'Small badge above the headline', kind: 'text', default: 'Built for tutors, teachers & coaching centers' },
   { page: 'Home', group: 'Top section (hero)', key: 'home.hero.line1', label: 'Headline, first line', kind: 'text', default: 'Run the class.' },
   { page: 'Home', group: 'Top section (hero)', key: 'home.hero.line2', label: 'Headline, second line (coloured)', kind: 'text', default: 'Not the chaos.' },
-  { page: 'Home', group: 'Top section (hero)', key: 'home.hero.body', label: 'Paragraph under the headline', kind: 'rich', default: 'ClassPilot gives tutors and coaching centers one clear workspace for students, batches, attendance, fees, and results — so every day starts with less chasing and more teaching.' },
+  { page: 'Home', group: 'Top section (hero)', key: 'home.hero.body', label: 'Paragraph under the headline', kind: 'rich', default: 'ClassPilotHub gives tutors and coaching centers one clear workspace for students, batches, attendance, fees, and results — so every day starts with less chasing and more teaching.' },
   { page: 'Home', group: 'Top section (hero)', key: 'home.hero.cta1', label: 'Main button', kind: 'text', default: 'Start free trial' },
   { page: 'Home', group: 'Top section (hero)', key: 'home.hero.cta2', label: 'Second button (opens an email)', kind: 'text', default: 'Book a demo' },
   { page: 'Home', group: 'Top section (hero)', key: 'home.hero.h1', label: 'Tick line 1', kind: 'text', default: 'No setup fees' },
@@ -29,7 +29,7 @@ export const SITE_FIELDS: FieldDef[] = [
   // ---------------- Home: audiences ----------------
   { page: 'Home', group: 'Three audiences', key: 'home.audiences.eyebrow', label: 'Small label', kind: 'text', default: 'Who it is for' },
   { page: 'Home', group: 'Three audiences', key: 'home.audiences.title', label: 'Heading', kind: 'text', default: 'One platform, three ways to teach' },
-  { page: 'Home', group: 'Three audiences', key: 'home.audiences.body', label: 'Paragraph', kind: 'rich', default: "Whether you teach at a student's home or run a full center, ClassPilot fits the way you work." },
+  { page: 'Home', group: 'Three audiences', key: 'home.audiences.body', label: 'Paragraph', kind: 'rich', default: "Whether you teach at a student's home or run a full center, ClassPilotHub fits the way you work." },
 
   // ---------------- Home: closing call to action ----------------
   { page: 'Home', group: 'Closing call to action', key: 'cta.title1', label: 'Heading, first part', kind: 'text', default: 'Make your next class' },
@@ -56,6 +56,6 @@ export const SITE_FIELDS: FieldDef[] = [
   // ---------------- Footer and contact ----------------
   { page: 'Footer & contact', group: 'Contact', key: 'site.contactEmail', label: 'Contact email', kind: 'email', default: 'arnavbhi5@gmail.com', hint: 'Used by "Book a demo", the footer Contact link and the About page.' },
   { page: 'Footer & contact', group: 'Footer', key: 'footer.about', label: 'Text under the logo', kind: 'text', default: 'A focused workspace for coaching centers to manage people, classes, attendance, fees, and results in one place.' },
-  { page: 'Footer & contact', group: 'Footer', key: 'footer.copyright', label: 'Copyright line', kind: 'text', default: '© {year} ClassPilot. All rights reserved.', hint: '{year} becomes the current year automatically.' },
+  { page: 'Footer & contact', group: 'Footer', key: 'footer.copyright', label: 'Copyright line', kind: 'text', default: '© {year} ClassPilotHub. All rights reserved.', hint: '{year} becomes the current year automatically.' },
   { page: 'Footer & contact', group: 'Footer', key: 'footer.tagline', label: 'Bottom-right line', kind: 'text', default: 'Built for coaching centers everywhere.' },
 ]

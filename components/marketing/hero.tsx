@@ -29,7 +29,7 @@ export async function Hero() {
               {text['home.hero.cta1']}
               <ArrowRight data-icon="inline-end" />
             </Button>
-            <Button size="lg" variant="outline" className="h-12 w-full rounded-md border-foreground px-5 sm:w-auto" render={<a href={`mailto:${text['site.contactEmail']}?subject=ClassPilot%20demo`} />}>
+            <Button size="lg" variant="outline" className="h-12 w-full rounded-md border-foreground px-5 sm:w-auto" render={<a href={`mailto:${text['site.contactEmail']}?subject=ClassPilotHub%20demo`} />}>
               {text['home.hero.cta2']}
               <MoveUpRight data-icon="inline-end" />
             </Button>

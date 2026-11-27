@@ -15,7 +15,7 @@ export const revalidate = 60
 
 export const metadata: Metadata = {
   title: 'About',
-  description: `Meet ${FOUNDER.name}, the founder of ClassPilot, and why it is being built.`,
+  description: `Meet ${FOUNDER.name}, the founder of ClassPilotHub, and why it is being built.`,
   alternates: { canonical: '/about' },
 }
 
@@ -67,7 +67,7 @@ export default async function AboutPage() {
 
       <section className="mx-auto max-w-3xl px-4 py-12 sm:px-6" aria-labelledby="story-title">
         <Reveal>
-          <h2 id="story-title" className="font-display text-3xl font-bold tracking-tight">Why ClassPilot</h2>
+          <h2 id="story-title" className="font-display text-3xl font-bold tracking-tight">Why ClassPilotHub</h2>
           <div className="mt-6 flex flex-col gap-5 text-lg leading-relaxed text-muted-foreground">
             {story.map((paragraph) => (
               <p key={paragraph}><RichText text={paragraph} /></p>

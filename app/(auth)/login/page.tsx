@@ -32,7 +32,7 @@ function LoginForm() {
     const type = options.find((option) => option.id === searchParams.get('type'))
     const messages: Record<string, string> = {
       google_failed: 'Google sign-in did not finish. Please try again.',
-      no_account: 'No ClassPilot account uses this Google email. Owners can create one from Sign up. Students and teachers: ask your center owner to add your email.',
+      no_account: 'No ClassPilotHub account uses this Google email. Owners can create one from Sign up. Students and teachers: ask your center owner to add your email.',
       wrong_type: type ? `This is a ${type.id} account. Please choose "${type.label}" above to log in.` : 'This account belongs to a different login type.',
     }
     toast.error(messages[reason] ?? 'Sign-in failed. Please try again.', { id: 'auth-error' })
@@ -79,7 +79,7 @@ function LoginForm() {
       return
     }
 
-    toast.success('Welcome back to ClassPilot')
+    toast.success('Welcome back to ClassPilotHub')
     const accessToken = data.session?.access_token
     if (accessToken) {
       void fetch('/api/auth/log-session', { method: 'POST', headers: { Authorization: `Bearer ${accessToken}` } })
@@ -96,7 +96,7 @@ function LoginForm() {
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-2">
         <h1 className="font-display text-2xl font-bold tracking-tight text-foreground">Welcome back</h1>
-        <p className="text-sm text-muted-foreground">Choose how you want to log in to ClassPilot.</p>
+        <p className="text-sm text-muted-foreground">Choose how you want to log in to ClassPilotHub.</p>
       </div>
 
       <div className="grid grid-cols-3 gap-2" role="tablist" aria-label="Log in as">
@@ -132,7 +132,7 @@ function LoginForm() {
       <GoogleButton mode="login" next={searchParams.get('next')} memberType={selected} />
 
       {selected === 'owner' ? (
-        <p className="text-center text-sm text-muted-foreground">New to ClassPilot? <Link href="/signup" className="font-medium text-primary hover:underline">Create an owner account</Link></p>
+        <p className="text-center text-sm text-muted-foreground">New to ClassPilotHub? <Link href="/signup" className="font-medium text-primary hover:underline">Create an owner account</Link></p>
       ) : (
         <p className="text-center text-sm text-muted-foreground">Your email and password are given to you by your center owner. Forgot them? Ask your owner to reset your password.</p>
       )}

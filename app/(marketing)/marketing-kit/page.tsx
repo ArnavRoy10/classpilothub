@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 
 const content = {
   reelIdeas: [
-    ['Before / after', 'Show a messy spreadsheet, then the ClassPilot dashboard. Hook: “Still running your institute from five tabs?”'],
+    ['Before / after', 'Show a messy spreadsheet, then the ClassPilotHub dashboard. Hook: “Still running your institute from five tabs?”'],
     ['Attendance rescue', 'Show how quickly a tutor can mark a batch and identify students slipping below target attendance.'],
     ['Fee follow-up', 'Turn a common fee reminder into a calm, professional message using the communication center.'],
     ['One-day walkthrough', 'Follow a real class day: attendance, test marks, announcements, and a quick dashboard check.'],
@@ -27,7 +27,7 @@ const content = {
     'Attendance, fees, tests, and results — one calm workspace.',
     'Tutors: get your admin out of the way and get back to teaching.',
     'A better way to stay on top of every batch.',
-    'Try ClassPilot free for 14 days. No setup fee.',
+    'Try ClassPilotHub free for 14 days. No setup fee.',
   ],
 }
 
@@ -59,7 +59,7 @@ export default function MarketingKitPage() {
       <section className="mx-auto max-w-6xl px-4 pb-12 pt-16 sm:px-6 sm:pt-24">
         <div className="max-w-3xl">
           <Badge variant="secondary" className="gap-2 rounded-full px-3 py-1">
-            <Share2 className="size-3.5" /> ClassPilot marketing kit
+            <Share2 className="size-3.5" /> ClassPilotHub marketing kit
           </Badge>
           <h1 className="mt-5 font-display text-4xl font-bold tracking-tight text-balance sm:text-6xl">
             Useful words for finding your first customers.
@@ -69,9 +69,9 @@ export default function MarketingKitPage() {
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Button size="lg" render={<Link href="/signup" />}>
-              Try ClassPilot free <ArrowRight data-icon="inline-end" />
+              Try ClassPilotHub free <ArrowRight data-icon="inline-end" />
             </Button>
-            <Button size="lg" variant="outline" render={<a href="mailto:arnavbhi5@gmail.com?subject=ClassPilot%20demo" />}>
+            <Button size="lg" variant="outline" render={<a href="mailto:arnavbhi5@gmail.com?subject=ClassPilotHub%20demo" />}>
               Book a demo <Mail data-icon="inline-end" />
             </Button>
           </div>
@@ -82,11 +82,11 @@ export default function MarketingKitPage() {
         <Card className="lg:col-span-2">
           <CardHeader>
             <CardTitle className="font-display">The simple pitch</CardTitle>
-            <CardDescription>Use this when someone asks what ClassPilot does.</CardDescription>
+            <CardDescription>Use this when someone asks what ClassPilotHub does.</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="rounded-lg border border-primary/20 bg-primary/5 p-5 text-lg leading-relaxed text-foreground">
-              ClassPilot helps tutors and coaching centers manage students, batches, attendance, fees, tests, results, and announcements from one reliable workspace.
+              ClassPilotHub helps tutors and coaching centers manage students, batches, attendance, fees, tests, results, and announcements from one reliable workspace.
             </div>
             <div className="mt-5 grid gap-3 sm:grid-cols-3">
               {['Less admin after class', 'Clearer batch visibility', 'A better parent experience'].map((item) => (
@@ -113,7 +113,7 @@ export default function MarketingKitPage() {
           <CardContent className="space-y-4 text-sm text-muted-foreground">
             <p className="flex gap-3"><Play className="size-4 shrink-0 text-primary" />Start with the admin problem in the first two seconds.</p>
             <p className="flex gap-3"><MessageCircle className="size-4 shrink-0 text-primary" />Show one workflow, not every feature.</p>
-            <p className="flex gap-3"><ArrowRight className="size-4 shrink-0 text-primary" />End with “Try ClassPilot free.”</p>
+            <p className="flex gap-3"><ArrowRight className="size-4 shrink-0 text-primary" />End with “Try ClassPilotHub free.”</p>
           </CardContent>
         </Card>
 

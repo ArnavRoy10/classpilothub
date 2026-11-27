@@ -11,7 +11,7 @@ const TIPS = ['Summarise my day', 'How are fees doing?', 'How do I add a batch?'
 const WAVE = [0.35, 0.6, 0.9, 0.5, 1, 0.7, 0.45, 0.85, 0.55, 0.4, 0.65]
 
 // Chat assistant that knows a summary of this organisation (counts, today's attendance, fees, classes)
-// and how ClassPilot works. It only answers questions: it cannot change any data.
+// and how ClassPilotHub works. It only answers questions: it cannot change any data.
 export function AiAssistant() {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
@@ -65,7 +65,7 @@ export function AiAssistant() {
                 />
               ))}
             </div>
-            <p className="max-w-[16rem] text-sm text-muted-foreground">Ask about today&apos;s attendance, fees, classes — or how to do anything in ClassPilot.</p>
+            <p className="max-w-[16rem] text-sm text-muted-foreground">Ask about today&apos;s attendance, fees, classes — or how to do anything in ClassPilotHub.</p>
           </div>
         ) : (
           messages.map((message, index) => (
