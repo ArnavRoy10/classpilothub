@@ -8,24 +8,40 @@ import { Cta } from '@/components/marketing/cta'
 import { Audiences } from '@/components/marketing/audiences'
 import { Marquee } from '@/components/marketing/marquee'
 import { DayStory } from '@/components/marketing/day-story'
-import { SITE_URL, SITE_NAME } from '@/lib/site-url'
+import { PLANS, PLAN_ORDER } from '@/lib/plans'
+import { SITE_URL, SITE_NAME, SITE_TITLE, SITE_DESCRIPTION } from '@/lib/site-url'
 
 // Re-checks your saved edits at most once a minute, so the page stays fast.
 export const revalidate = 60
 
 export const metadata: Metadata = {
-  title: 'Coaching center software that keeps classes moving',
-  description: 'ClassPilotHub helps tutors and coaching centers manage students, batches, attendance, fees, tests, and results in one clear workspace.',
+  title: { absolute: SITE_TITLE },
+  description: SITE_DESCRIPTION,
+  keywords: [
+    'coaching institute management software',
+    'coaching center software',
+    'tuition management software',
+    'fee management software for coaching',
+    'student attendance software',
+    'batch management software',
+    'tutor management software',
+    'ClassPilotHub',
+  ],
   alternates: { canonical: '/' },
   openGraph: {
-    title: 'ClassPilotHub — Run the class. Not the chaos.',
-    description: 'A dependable workspace for the people and routines behind great classes.',
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
     url: '/',
+    siteName: SITE_NAME,
+    type: 'website',
   },
+  twitter: { card: 'summary_large_image', title: SITE_TITLE, description: SITE_DESCRIPTION },
 }
 
-// Tells Google the site's name and logo, so results show "ClassPilotHub"
-// instead of the bare domain.
+const prices = PLAN_ORDER.map((id) => PLANS[id].monthly)
+
+// Tells Google the site's name, logo and what the product is, so results show "ClassPilotHub"
+// instead of the bare domain and can describe the software correctly.
 const structuredData = {
   '@context': 'https://schema.org',
   '@graph': [
@@ -34,8 +50,9 @@ const structuredData = {
       '@id': `${SITE_URL}/#website`,
       url: `${SITE_URL}/`,
       name: SITE_NAME,
-      alternateName: ['ClassPilotHub Hub', 'classpilothub.me'],
+      alternateName: ['ClassPilot Hub', 'classpilothub.me'],
       inLanguage: 'en',
+      publisher: { '@id': `${SITE_URL}/#organization` },
     },
     {
       '@type': 'Organization',
@@ -43,6 +60,22 @@ const structuredData = {
       name: SITE_NAME,
       url: `${SITE_URL}/`,
       logo: `${SITE_URL}/icon.png`,
+    },
+    {
+      '@type': 'SoftwareApplication',
+      '@id': `${SITE_URL}/#software`,
+      name: SITE_NAME,
+      url: `${SITE_URL}/`,
+      description: SITE_DESCRIPTION,
+      applicationCategory: 'BusinessApplication',
+      operatingSystem: 'Web',
+      offers: {
+        '@type': 'AggregateOffer',
+        priceCurrency: 'INR',
+        lowPrice: Math.min(...prices),
+        highPrice: Math.max(...prices),
+        offerCount: prices.length,
+      },
     },
   ],
 }
