@@ -15,7 +15,7 @@ export const revalidate = 60
 
 export const metadata: Metadata = {
   title: 'About',
-  description: `Meet ${FOUNDER.name}, the founder of ClassPilotHub, and why it is being built.`,
+  description: `Meet ${FOUNDER.name}, the founder of ClassPilotHub, and why this coaching institute management software is being built.`,
   alternates: { canonical: '/about' },
 }
 
