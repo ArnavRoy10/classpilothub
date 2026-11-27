@@ -1,31 +1,30 @@
 import type { Metadata } from 'next'
-import { FeaturesSection } from '@/components/marketing/features-section'
-import { HowItWorks } from '@/components/marketing/how-it-works'
+import { PricingSection } from '@/components/marketing/pricing-section'
+import { Faq } from '@/components/marketing/faq'
 import { Cta } from '@/components/marketing/cta'
 
 export const metadata: Metadata = {
-  title: 'Features: Coaching Management Software',
+  title: 'Pricing: Coaching Institute Software from ₹299/month',
   description:
-    'Students, teachers, batches, attendance, fees, tests, results, timetable and announcements. Every module a coaching institute needs, in one place.',
-  alternates: { canonical: '/features' },
+    'Simple ClassPilotHub plans for solo tutors, growing coaching centers and multi-branch institutes. No setup fees, 14-day free trial.',
+  alternates: { canonical: '/pricing' },
 }
 
-export default function FeaturesPage() {
+export default function PricingPage() {
   return (
     <>
       <div className="border-b border-border bg-gradient-to-b from-primary/8 to-transparent">
         <div className="mx-auto max-w-3xl px-4 py-16 text-center sm:px-6">
           <h1 className="font-display text-4xl font-bold tracking-tight text-balance text-foreground sm:text-5xl">
-            Every module your center needs
+            Simple pricing for the way you teach
           </h1>
           <p className="mt-4 text-lg leading-relaxed text-pretty text-muted-foreground">
-            ClassPilotHub replaces the tangle of registers and spreadsheets with
-            focused, connected tools your whole team can share.
+            Start free, choose the workspace that fits your classroom, and move up only when your center is ready.
           </p>
         </div>
       </div>
-      <FeaturesSection />
-      <HowItWorks />
+      <PricingSection />
+      <Faq />
       <Cta />
     </>
   )
