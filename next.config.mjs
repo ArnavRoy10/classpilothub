@@ -1,3 +1,16 @@
+// Pages that should never appear in Google (they stay reachable by link).
+const NOINDEX_PAGES = [
+  '/terms',
+  '/privacy',
+  '/security',
+  '/login',
+  '/signup',
+  '/onboarding',
+  '/marketing-kit',
+  '/marketing-kit/:path*',
+  '/tutors/:id',
+]
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   async headers() {
@@ -14,6 +27,10 @@ const nextConfig = {
           { key: 'Cross-Origin-Resource-Policy', value: 'same-origin' },
         ],
       },
+      ...NOINDEX_PAGES.map((source) => ({
+        source,
+        headers: [{ key: 'X-Robots-Tag', value: 'noindex, follow' }],
+      })),
       {
         // The service worker must never be cached, or updates to it would not reach phones.
         source: '/sw.js',
